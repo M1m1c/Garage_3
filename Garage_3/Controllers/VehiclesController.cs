@@ -79,8 +79,16 @@ namespace Garage_3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Park([Bind("RegNum,Wheels,Model,Brand,ArrivalTime,Color,MemberNumber,TypeID")] Vehicle vehicle)
+        public async Task<IActionResult> Park([Bind("RegNum,Wheels,Model,Brand,MemberNumber,TypeID")] Vehicle vehicle, string colorName)
         {
+            vehicle.ArrivalTime = DateTime.Now;
+            //TODO check if empty creaete new color in table
+            //First letter to upper.
+            vehicle.ColorId = _context.Colors.FirstOrDefault(c => c.ColorName.ToLower() == colorName.ToLower()).Id;
+
+            vehicle.Color = _context.Colors.Find(vehicle.ColorId);
+
+
             //TODO: fix color set
             if (ModelState.IsValid)
             {
