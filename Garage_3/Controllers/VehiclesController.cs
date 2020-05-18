@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage_3.Data;
 using Garage_3.Models;
+using Garage_3.Models.ViewModel;
 
 namespace Garage_3.Controllers
 {
@@ -25,6 +26,7 @@ namespace Garage_3.Controllers
             return View(await _context.Vehicle.ToListAsync());
         }
 
+
         // GET: Vehicles/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -42,9 +44,32 @@ namespace Garage_3.Controllers
 
             return View(vehicle);
         }
+        public async Task<IActionResult> OwnerViewModel(int? id)
+        {
+            if (id==null)
+            {
+                return NotFound();
+            }
+
+            var owner = await _context.Owners
+                .FirstOrDefaultAsync(m => m.MemberNumber == id);
+            if (owner == null)
+            {
+                return NotFound();
+            }
+            var model = new OwnerViewModel
+            {
+                MemberNumber = owner.MemberNumber,
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                Vehicles = owner.Vehicles
+            };
+
+            return View(model);
+        }
 
         // GET: Vehicles/Create
-        public IActionResult Create()
+        public IActionResult Park()
         {
             return View();
         }
@@ -54,15 +79,38 @@ namespace Garage_3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RegNum,Wheels,Model,Brand,ArrivalTime,Color,MemberNumber,TypeID")] Vehicle vehicle)
+        public async Task<IActionResult> Park([Bind("RegNum,Wheels,Model,Brand,ArrivalTime,Color,MemberNumber,TypeID")] Vehicle vehicle)
         {
+            //TODO: fix color set
             if (ModelState.IsValid)
             {
+                //om vehicles.color.name finns
+                //använd det id:t
+                //else color.id= vehicles.colorid
+                //color.name = vehicles.colorstring
+
+                vehicle.Color = _context.Colors.FirstOrDefault(c=> c.ColorName == vehicle.Color.ColorName);
                 _context.Add(vehicle);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicle);
+        }
+        public IActionResult AddOwner()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOwner([Bind("MemberNumber, FirstName, LastName, Vehicles")] Owner owner)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(owner);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(owner);
         }
 
         // GET: Vehicles/Edit/5
