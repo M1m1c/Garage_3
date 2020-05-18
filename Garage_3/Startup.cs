@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Garage_3.Data;
 
 namespace Garage_3
 {
@@ -24,6 +26,9 @@ namespace Garage_3
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<Garage_3Context>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("Garage_3Context")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

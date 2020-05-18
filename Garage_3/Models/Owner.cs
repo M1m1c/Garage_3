@@ -10,12 +10,11 @@ namespace Garage_3.Models
     public class Owner
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int MemberNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        //Foreign Key
-        public ICollection<string> VehicleRegNums { get; set; }
+        //Navigation Property
+        public ICollection<Vehicle> Vehicles { get; set; }
     }
 }

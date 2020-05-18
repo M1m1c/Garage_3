@@ -21,16 +21,17 @@ namespace Garage_3.Models
 
         public DateTime ArrivalTime { get; set; }
 
-        public Color? Color { get; set; }
+      
 
         //Foreign key
         public int MemberNumber { get; set; }
         public int TypeID { get; set; }
+        public int ColorId { get; set; }
 
-    }
+        //Navigation property
+        public Owner Owner { get; set; }
+        public VehicleType VehicleType { get; set; }
+        public Color Color { get; set; }
 
-    public enum Color
-    {
-        none
     }
 }
