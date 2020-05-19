@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Garage_3.Models.ViewModel
 {
-    public class OwnerViewModel
+    public class Profile
     {
         [Display(Name = "Medlemsnummer")]
         public int MemberNumber { get; set; }
@@ -19,7 +19,8 @@ namespace Garage_3.Models.ViewModel
         
         [Display(Name = "Användarnamn")]
         public string UserName { get; set; }
-
+        public string Email { get; set; }
+        public string Telephone { get; set; }
 
         //Navigation Property
         public ICollection<Vehicle> Vehicles { get; set; }
