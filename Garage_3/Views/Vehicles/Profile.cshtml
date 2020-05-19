@@ -1,0 +1,12 @@
+﻿@model Garage_3.Models.ViewModel.Profile
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<partial name="ProfilePartial"/>
+<div class="pt-5">
+    <a asp-action="Edit" asp-route-id="@Model.MemberNumber">Redigera</a> |
+    <a asp-action="Delete" asp-route-id="@Model.MemberNumber">Ta bort profil</a> |
+    <a asp-action="OwnerIndex">Tillbaka till medlemmar</a>
+</div>
