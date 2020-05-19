@@ -124,8 +124,8 @@ namespace Garage_3.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOwner([Bind("MemberNumber, FirstName, LastName, Vehicles")] Owner owner)
-        {
+        public async Task<IActionResult> AddOwner([Bind("UserName,FirstName, LastName, Email, Telephone")] Owner owner)
+        {         
             if (ModelState.IsValid)
             {
                 _context.Add(owner);
@@ -133,6 +133,24 @@ namespace Garage_3.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(owner);
+        }
+
+        [HttpPost]
+        public JsonResult UserNameExists(string UserName)
+        {
+            return Json(_context.Owners.Any(o => o.UserName == UserName) == false);
+        }
+
+        [HttpPost]
+        public JsonResult EmailExists(string Email)
+        {
+            return Json(_context.Owners.Any(o => o.Email == Email) == false);
+        }
+
+        [HttpPost]
+        public JsonResult PhoneExists(string Telephone)
+        {
+            return Json(_context.Owners.Any(o => o.Telephone == Telephone) == false);
         }
 
         // GET: Vehicles/Edit/5
