@@ -69,7 +69,7 @@ namespace Garage_3.Controllers
                 UserName = owner.UserName,
                 Telephone = owner.Telephone,
                 Email = owner.Email,
-                Vehicles = owner.Vehicles
+                Vehicles = _context.Vehicle.Where(o=> o.MemberNumber==owner.MemberNumber).ToList()
             };
 
             return View(model);
