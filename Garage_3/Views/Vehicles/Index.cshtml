@@ -10,25 +10,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Wheels)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Brand)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArrivalTime)
+                @Html.DisplayNameFor(model => model.RegNum)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Color)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MemberNumber)
+                @Html.DisplayNameFor(model => model.Owner.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TypeID)
+                @Html.DisplayNameFor(model => model.VehicleType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ArrivalTime)
             </th>
             <th></th>
         </tr>
@@ -36,27 +30,23 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+
             <td>
-                @Html.DisplayFor(modelItem => item.Wheels)
+                @Html.DisplayFor(modelItem => item.RegNum)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Model)
+                @Html.DisplayFor(modelItem => item.Color.ColorName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Brand)
+                @Html.DisplayFor(modelItem => item.Owner.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ArrivalTime)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MemberNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TypeID)
-            </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.RegNum">Redigera</a> |
                 <a asp-action="Details" asp-route-id="@item.RegNum">Detaljer</a> |
