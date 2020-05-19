@@ -19,7 +19,11 @@ namespace Garage_3.Models.ViewModel
         
         [Display(Name = "Användarnamn")]
         public string UserName { get; set; }
+        
+        [Display(Name = "E-post")]
         public string Email { get; set; }
+        
+        [Display(Name = "Telefon")]
         public string Telephone { get; set; }
 
         //Navigation Property

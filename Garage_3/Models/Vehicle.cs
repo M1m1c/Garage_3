@@ -29,13 +29,19 @@ namespace Garage_3.Models
       
 
         //Foreign key
+        [Display(Name = "Medlemsnummer")]
         public int MemberNumber { get; set; }
+        
+        [Display(Name = "Fordonstyp")]
         public int TypeID { get; set; }
+        
         public int ColorId { get; set; }
 
         //Navigation property
         public Owner Owner { get; set; }
         public VehicleType VehicleType { get; set; }
+        
+        [Display(Name = "Färg")]
         public Color Color { get; set; }
 
     }
