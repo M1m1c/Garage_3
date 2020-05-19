@@ -44,7 +44,7 @@ namespace Garage_3.Controllers
 
             return View(vehicle);
         }
-        public async Task<IActionResult> OwnerViewModel(int? id)
+        public async Task<IActionResult> Profile(int? id)
         {
             if (id==null)
             {
@@ -57,12 +57,14 @@ namespace Garage_3.Controllers
             {
                 return NotFound();
             }
-            var model = new OwnerViewModel
+            var model = new Profile
             {
                 MemberNumber = owner.MemberNumber,
                 FirstName = owner.FirstName,
                 LastName = owner.LastName,
                 UserName = owner.UserName,
+                Telephone = owner.Telephone,
+                Email = owner.Email,
                 Vehicles = owner.Vehicles
             };
 
