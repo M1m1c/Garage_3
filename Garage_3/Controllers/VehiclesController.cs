@@ -23,7 +23,11 @@ namespace Garage_3.Controllers
         // GET: Vehicles
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Vehicle.ToListAsync());
+            // var list = await _context.Vehicle.ToListAsync();
+
+            //var viewModel = _context.Vehicle.Select(v => ToVehicleViewModel(v));
+            var temp = _context.Vehicle.Select(v => v).Include(v => v.Color).Include(v => v.VehicleType).Include(v => v.Owner);
+            return View(await temp.ToListAsync());
         }
 
 
@@ -46,7 +50,7 @@ namespace Garage_3.Controllers
         }
         public async Task<IActionResult> OwnerViewModel(int? id)
         {
-            if (id==null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -70,9 +74,13 @@ namespace Garage_3.Controllers
         }
 
         // GET: Vehicles/Create
-        public IActionResult Park()
+        public IActionResult AddVehicle(int? id)
         {
-            return View();
+            if (_context.Owners.Any(o => o.MemberNumber == id))
+            {
+                return View();
+            }
+            return NotFound();
         }
 
         // POST: Vehicles/Create
@@ -80,10 +88,51 @@ namespace Garage_3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Park([Bind("RegNum,Wheels,Model,Brand,MemberNumber,TypeID")] Vehicle vehicle, string colorName)
+        public async Task<IActionResult> AddVehicle(int? id, [Bind("RegNum,Wheels,Model,Brand,ColorName,VehicleType")] AddVehicleViewModel viewModel)
         {
-            vehicle.ArrivalTime = DateTime.Now;
 
+            viewModel.RegNum.ToUpper();
+
+            if (ModelState.IsValid)
+            {
+                var vehicle = new Vehicle {
+                    RegNum = viewModel.RegNum,
+                    Wheels = viewModel.Wheels,
+                    Model = viewModel.Model,
+                    Brand = viewModel.Brand
+                };
+
+                vehicle.ArrivalTime = DateTime.Now;
+
+                int tempColorId = ColorSetup(viewModel.ColorName);
+
+                vehicle.ColorId = tempColorId;
+
+                vehicle.Color = _context.Colors.Find(tempColorId);
+
+
+                int tempTypeId = VehicleTypeSetup(viewModel.VehicleType);
+
+                vehicle.TypeID = tempTypeId;
+
+                vehicle.VehicleType = _context.VehicleTypes.Find(tempTypeId);
+
+                vehicle.MemberNumber = (int)id;
+                vehicle.Owner = _context.Owners.Find((int)id);
+
+                if (vehicle.Color != null && vehicle.VehicleType != null && vehicle.Owner != null)
+                {
+                    _context.Add(vehicle);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            return View(viewModel);
+        }
+
+        private int ColorSetup(string colorName)
+        {
             if (_context.Colors.Any(c => c.ColorName.ToLower() == colorName.ToLower()) == false)
             {
                 _context.Colors.Add(new Color
@@ -95,30 +144,39 @@ namespace Garage_3.Controllers
             }
 
             var tempColorId = _context.Colors.FirstOrDefault(c => c.ColorName.ToLower() == colorName.ToLower()).Id;
-
-            vehicle.ColorId = tempColorId;
-
-            vehicle.Color = _context.Colors.Find(tempColorId);
-
-            if (vehicle.Color != null)
-           {
-                //TODO: fix color set
-                if (ModelState.IsValid)
-                {
-                    //om vehicles.color.name finns
-                    //använd det id:t
-                    //else color.id= vehicles.colorid
-                    //color.name = vehicles.colorstring
-
-                    vehicle.Color = _context.Colors.FirstOrDefault(c => c.ColorName == vehicle.Color.ColorName);
-                    _context.Add(vehicle);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-           }
-           
-            return View(vehicle);
+            return tempColorId;
         }
+
+        private int VehicleTypeSetup(string VehicleTypeName)
+        {
+            if (_context.VehicleTypes.Any(c => c.VehicleTypeName.ToLower() == VehicleTypeName.ToLower()) == false)
+            {
+                _context.VehicleTypes.Add(new VehicleType
+                {
+                    VehicleTypeName = VehicleTypeName.ToUpper()
+                });
+
+                _context.SaveChanges();
+            }
+
+            var tempColorId = _context.VehicleTypes.FirstOrDefault(c => c.VehicleTypeName.ToLower() == VehicleTypeName.ToLower()).Id;
+            return tempColorId;
+        }
+
+        [HttpPost]
+        public JsonResult RegNumExists(string RegNum)
+        {
+            return Json(_context.Vehicle.Any(v => v.RegNum.ToUpper() == RegNum.ToUpper()) == false);
+        }
+
+        public IActionResult Park()
+        {
+            return View();
+        }
+
+        /* public async Task<IActionResult> Park(int? id)
+         { 
+         }*/
         public IActionResult AddOwner()
         {
             return View();
@@ -126,7 +184,7 @@ namespace Garage_3.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOwner([Bind("UserName,FirstName, LastName, Email, Telephone")] Owner owner)
-        {         
+        {
             if (ModelState.IsValid)
             {
                 _context.Add(owner);
@@ -241,17 +299,6 @@ namespace Garage_3.Controllers
         public async Task<IActionResult> OwnerIndex()
         {
             return View(await _context.Owners.ToListAsync());
-        }
-
-        public VehicleViewModel ToVehicleViewModel(Vehicle vehicle)
-        {
-            return new VehicleViewModel {
-                RegNum = vehicle.RegNum,
-                VColor = _context.Colors.FirstOrDefault(c => c.Id == vehicle.ColorId).ColorName,
-                VType = _context.VehicleTypes.FirstOrDefault(vt => vt.Id == vehicle.TypeID).VehicleTypeName,
-                OwnerUserName = _context.Owners.FirstOrDefault(o => o.MemberNumber == vehicle.MemberNumber).UserName,
-                ArrivalTime = vehicle.ArrivalTime
-            };
         }
     }
 }
