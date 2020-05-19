@@ -4,10 +4,10 @@
     ViewData["Title"] = "OwnerViewModel";
 }
 
-<h1>OwnerViewModel</h1>
+<h1>Medlem</h1>
 
 <div>
-    <h4>OwnerViewModel</h4>
+    <h4>Profil</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -30,7 +30,12 @@
         </dd>
     </dl>
 </div>
+<p>
+    <a asp-action="AddVehicle">Lägg till fordon</a>|
+    <a asp-action="Park">Parkera ett fordon</a>
+</p>
 <div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.MemberNumber">Redigera</a> |
+    <a asp-action="Delete" asp-route-id="@Model.MemberNumber">Ta bort profil</a> |
+    <a asp-action="OwnerIndex">Tillbaka till medlemmar</a>
 </div>
