@@ -205,5 +205,9 @@ namespace Garage_3.Controllers
         {
             return _context.Vehicle.Any(e => e.RegNum == id);
         }
+        public async Task<IActionResult> OwnerIndex()
+        {
+            return View(await _context.Owners.ToListAsync());
+        }
     }
 }
