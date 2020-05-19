@@ -62,6 +62,7 @@ namespace Garage_3.Controllers
                 MemberNumber = owner.MemberNumber,
                 FirstName = owner.FirstName,
                 LastName = owner.LastName,
+                UserName = owner.UserName,
                 Vehicles = owner.Vehicles
             };
 

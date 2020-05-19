@@ -13,6 +13,7 @@ namespace Garage_3.Models
         public int MemberNumber { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string UserName { get; set; }
 
         //Navigation Property
         public ICollection<Vehicle> Vehicles { get; set; }
