@@ -11,14 +11,19 @@ namespace Garage_3.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Display(Name = "Regnummer")]
         public string RegNum { get; set; }
 
+        [Display(Name = "Antal hjul")]
         public int? Wheels { get; set; }
 
+        [Display(Name = "Modell")]
         public string Model { get; set; }
 
+        [Display(Name = "Fabrikat")]
         public string Brand { get; set; }
 
+        [Display(Name = "Ankomsttid")]
         public DateTime ArrivalTime { get; set; }
 
       

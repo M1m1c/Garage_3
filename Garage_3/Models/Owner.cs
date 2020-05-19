@@ -10,9 +10,14 @@ namespace Garage_3.Models
     public class Owner
     {
         [Key]
+        [Display(Name = "Medlemsnummer")]
         public int MemberNumber { get; set; }
-        public string FirstName { get; set; }
+        
+        [Display(Name = "Efternamn")]
         public string LastName { get; set; }
+        
+        [Display(Name = "Förnamn")]
+        public string FirstName { get; set; }
 
         //Navigation Property
         public ICollection<Vehicle> Vehicles { get; set; }
