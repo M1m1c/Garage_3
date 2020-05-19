@@ -83,26 +83,40 @@ namespace Garage_3.Controllers
         public async Task<IActionResult> Park([Bind("RegNum,Wheels,Model,Brand,MemberNumber,TypeID")] Vehicle vehicle, string colorName)
         {
             vehicle.ArrivalTime = DateTime.Now;
-            //TODO check if empty creaete new color in table
-            //First letter to upper.
-            vehicle.ColorId = _context.Colors.FirstOrDefault(c => c.ColorName.ToLower() == colorName.ToLower()).Id;
 
-            vehicle.Color = _context.Colors.Find(vehicle.ColorId);
-
-
-            //TODO: fix color set
-            if (ModelState.IsValid)
+            if (_context.Colors.Any(c => c.ColorName.ToLower() == colorName.ToLower()) == false)
             {
-                //om vehicles.color.name finns
-                //använd det id:t
-                //else color.id= vehicles.colorid
-                //color.name = vehicles.colorstring
+                _context.Colors.Add(new Color
+                {
+                    ColorName = colorName.ToUpper()
+                });
 
-                vehicle.Color = _context.Colors.FirstOrDefault(c=> c.ColorName == vehicle.Color.ColorName);
-                _context.Add(vehicle);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                _context.SaveChanges();
             }
+
+            var tempColorId = _context.Colors.FirstOrDefault(c => c.ColorName.ToLower() == colorName.ToLower()).Id;
+
+            vehicle.ColorId = tempColorId;
+
+            vehicle.Color = _context.Colors.Find(tempColorId);
+
+            if (vehicle.Color != null)
+           {
+                //TODO: fix color set
+                if (ModelState.IsValid)
+                {
+                    //om vehicles.color.name finns
+                    //använd det id:t
+                    //else color.id= vehicles.colorid
+                    //color.name = vehicles.colorstring
+
+                    vehicle.Color = _context.Colors.FirstOrDefault(c => c.ColorName == vehicle.Color.ColorName);
+                    _context.Add(vehicle);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+           }
+           
             return View(vehicle);
         }
         public IActionResult AddOwner()
@@ -111,8 +125,8 @@ namespace Garage_3.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOwner([Bind("MemberNumber, FirstName, LastName, Vehicles")] Owner owner)
-        {
+        public async Task<IActionResult> AddOwner([Bind("UserName,FirstName, LastName, Email, Telephone")] Owner owner)
+        {         
             if (ModelState.IsValid)
             {
                 _context.Add(owner);
@@ -120,6 +134,24 @@ namespace Garage_3.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(owner);
+        }
+
+        [HttpPost]
+        public JsonResult UserNameExists(string UserName)
+        {
+            return Json(_context.Owners.Any(o => o.UserName == UserName) == false);
+        }
+
+        [HttpPost]
+        public JsonResult EmailExists(string Email)
+        {
+            return Json(_context.Owners.Any(o => o.Email == Email) == false);
+        }
+
+        [HttpPost]
+        public JsonResult PhoneExists(string Telephone)
+        {
+            return Json(_context.Owners.Any(o => o.Telephone == Telephone) == false);
         }
 
         // GET: Vehicles/Edit/5
