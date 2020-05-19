@@ -242,5 +242,16 @@ namespace Garage_3.Controllers
         {
             return View(await _context.Owners.ToListAsync());
         }
+
+        public VehicleViewModel ToVehicleViewModel(Vehicle vehicle)
+        {
+            return new VehicleViewModel {
+                RegNum = vehicle.RegNum,
+                VColor = _context.Colors.FirstOrDefault(c => c.Id == vehicle.ColorId).ColorName,
+                VType = _context.VehicleTypes.FirstOrDefault(vt => vt.Id == vehicle.TypeID).VehicleTypeName,
+                OwnerUserName = _context.Owners.FirstOrDefault(o => o.MemberNumber == vehicle.MemberNumber).UserName,
+                ArrivalTime = vehicle.ArrivalTime
+            };
+        }
     }
 }
