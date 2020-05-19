@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -26,7 +27,9 @@ namespace Garage_3.Models
         [Display(Name = "Ankomsttid")]
         public DateTime ArrivalTime { get; set; }
 
-      
+        public bool ParkedFlag { get; set; }
+
+
 
         //Foreign key
         public int MemberNumber { get; set; }
