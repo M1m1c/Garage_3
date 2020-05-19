@@ -41,7 +41,7 @@
                             </dd>
                         </dl>
                         <p>
-                            <a asp-action="AddVehicle" class="btn btn-success m-2">Lägg till fordon</a>
+                            <a asp-action="AddVehicle" asp-route-id="@Model.MemberNumber" class="btn btn-success m-2">Lägg till fordon</a>
                             <a asp-action="Park" class="btn btn-success m-2">Parkera ett fordon</a>
                         </p>
                     </div>
