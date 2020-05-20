@@ -4,9 +4,9 @@
     ViewData["Title"] = "AddVehicle";
 }
 
-<h1>AddVehicle</h1>
+<h1>Lägg till fordon</h1>
 
-<h4>Vehicle</h4>
+@*<h4>Medlem: ???</h4>*@
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -43,14 +43,14 @@
                 <span asp-validation-for="ColorName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Lägg till" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Tillbaka till medlemmar</a>
 </div>
 
 @section Scripts {

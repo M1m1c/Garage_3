@@ -191,7 +191,7 @@ namespace Garage_3.Controllers
             {
                 _context.Add(owner);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(OwnerIndex));
             }
             return View(owner);
         }
