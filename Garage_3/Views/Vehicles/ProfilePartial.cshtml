@@ -42,28 +42,38 @@
                     </dl>
                     <p>
                         <a asp-action="AddVehicle" asp-route-id="@Model.MemberNumber" class="btn btn-success m-2">Lägg till fordon</a>
-                        <a asp-action="Park" class="btn btn-success m-2">Parkera ett fordon</a>
+                        @*<a asp-action="Park" class="btn btn-success m-2">Parkera ett fordon</a>*@
                     </p>
                 </div>
 
                 <div class="col-sm">
                     <h4>Ägda fordon</h4>
-                    @if (Model.Vehicles.Count()>0)
+                    @if (Model.Vehicles.Count() > 0)
                     {
                         @foreach (var vehicle in Model.Vehicles)
                         {
                             <dl class="row">
                                 <dt class="col-sm-3">
-                                    @Html.DisplayFor(v => vehicle.RegNum)
+                                    <a asp-action="Details" asp-route-id="@vehicle.RegNum" class="text-dark">
+                                        @Html.DisplayFor(v => vehicle.RegNum)
+                                    </a>
                                 </dt>
                                 <dd class="col-sm-9">
                                     @if (vehicle.ParkedFlag == true)
                                     {
-                                        <div class="badge badge-success p-1">Parkerad</div>
+                                        <a asp-action="Park" asp-route-regNum="@vehicle.RegNum">
+                                            <div class="badge badge-success p-1">Parkerad</div>
+                                        </a>
                                     }
                                     else
                                     {
-                                        <div class="badge badge-secondary p-1">Ej parkerad</div>
+                                        <a asp-action="Park" asp-route-regNum="@vehicle.RegNum">
+                                            <div class="badge badge-secondary p-1">Parkera</div>
+                                        </a>
+                                        <a  asp-action="Receipt" asp-route-regNum="@vehicle.RegNum">
+                                            <div class="badge badge-warning p-1">Klicka här för kvitto</div>
+                                        </a>
+                                            <div  class="parkEnded badge badge-warning p-1">Parkering stoppad!</div>
                                     }
                                 </dd>
                             </dl>
@@ -83,3 +93,9 @@
     </div>
 
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".parkEnded").fadeOut(3000);
+    });
+</script>

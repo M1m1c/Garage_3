@@ -1,0 +1,57 @@
+﻿@model Garage_3.Controllers.ReceiptViewModel
+
+<h1>Kvitto</h1>
+<hr />
+<div id="receipt">
+    <p>
+        - Garage 3.0 - <br />
+        Kassör: Jörgen <br />
+    </p>
+    <h5>@Html.DisplayFor(model => model.RegNum) har checkat ut!</h5>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.VehicleType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.VehicleType)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RegNum)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RegNum)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ArrivalTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ArrivalTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DepartureTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DepartureTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotalParkedTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotalParkedTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+    </dl>
+    <p>
+        Välkommen Åter!
+    </p>
+</div>
+<hr />
+<h5>- Tack för att du parkerat hos oss! -</h5>
+<a asp-action="Return" asp-route-user="@Model.UserName">Tillbaka till profil</a> |
+<a asp-action="OwnerIndex">Tillbaka till Medlemmar</a>
