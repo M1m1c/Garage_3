@@ -38,19 +38,19 @@
             @Html.DisplayNameFor(model => model.Color)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Color)
+            @Html.DisplayFor(model => model.Color.ColorName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MemberNumber)
+            @Html.DisplayNameFor(model => model.Owner)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MemberNumber)
+            @Html.DisplayFor(model => model.Owner.UserName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TypeID)
+            @Html.DisplayNameFor(model => model.VehicleType.VehicleTypeName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TypeID)
+            @Html.DisplayFor(model => model.VehicleType.VehicleTypeName)
         </dd>
     </dl>
 </div>

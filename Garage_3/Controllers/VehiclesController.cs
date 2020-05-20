@@ -44,13 +44,13 @@ namespace Garage_3.Controllers
                 return NotFound();
             }
 
-            var vehicle = await _context.Vehicle
+            var vehicle = await _context.Vehicle.Include(v => v.Color).Include(v => v.VehicleType).Include(v => v.Owner)
                 .FirstOrDefaultAsync(m => m.RegNum == id);
             if (vehicle == null)
             {
                 return NotFound();
             }
-
+            
             return View(vehicle);
         }
         public async Task<IActionResult> Profile(int? id)
