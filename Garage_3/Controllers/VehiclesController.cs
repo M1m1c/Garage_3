@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Garage_3.Data;
 using Garage_3.Models;
 using Garage_3.Models.ViewModel;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Garage_3.Controllers
 {
@@ -79,7 +80,15 @@ namespace Garage_3.Controllers
 
             return View(model);
         }
-
+        public IActionResult Return(string user)
+        {
+            var owner = _context.Owners.FirstOrDefault(o => o.UserName == user);
+            if (owner!=null)
+            {
+               return RedirectToAction(nameof(Profile), new { id = owner.MemberNumber });
+            }
+            return NotFound();
+        }
         // GET: Vehicles/Create
         public IActionResult AddVehicle(int? id)
         {
@@ -174,8 +183,8 @@ namespace Garage_3.Controllers
         {
             return Json(VehicleExists(RegNum) == false);
         }
-
-        public void Park(string regNum)
+        //[HttpPost]
+        public IActionResult Park(string regNum)
         {
             var vehicle = _context.Vehicle.Find(regNum);
 
@@ -189,7 +198,11 @@ namespace Garage_3.Controllers
                 {
                     vehicle.ParkedFlag = true;
                 }
-            }      
+                _context.SaveChanges();
+            return RedirectToAction(nameof(Profile), new { id= vehicle.MemberNumber});
+            }
+            return NotFound();
+
         }
 
         public IActionResult AddOwner()
@@ -307,7 +320,41 @@ namespace Garage_3.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool VehicleExists(string id)
+        public async Task<IActionResult> Receipt(string regNum)
+        {
+            var vehicle = await _context.Vehicle.FindAsync(regNum);
+            var owner = _context.Owners.FirstOrDefault(m=>m.MemberNumber == vehicle.MemberNumber);
+            vehicle.ParkedFlag = false;
+            await _context.SaveChangesAsync();
+
+            if (vehicle != null)
+            {
+                var model = new ReceiptViewModel
+                {
+                    RegNum = vehicle.RegNum,
+                    VehicleType = vehicle.VehicleType,
+                    UserName = owner.UserName,
+                    ArrivalTime = vehicle.ArrivalTime,
+                    DepartureTime = DateTime.Now
+                };
+                model.TotalParkedTime = model.DepartureTime - model.ArrivalTime;
+
+                model.Price = model.TotalParkedTime.Hours * 100;
+                model.Price += model.TotalParkedTime.Days * 24 * 100;
+                return RedirectToAction(nameof(ShowReceipt), model);
+            }
+            else
+                return NotFound();
+            
+            
+
+        }
+        public IActionResult ShowReceipt(ReceiptViewModel receipt)
+        {
+            return View(receipt);
+        }
+
+            private bool VehicleExists(string id)
         {
             return _context.Vehicle.Any(v => v.RegNum.ToUpper() == id.ToUpper());
         }
