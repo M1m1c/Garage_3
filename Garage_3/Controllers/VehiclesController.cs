@@ -21,13 +21,18 @@ namespace Garage_3.Controllers
         }
 
         // GET: Vehicles
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string regNum)
         {
-            // var list = await _context.Vehicle.ToListAsync();
-
-            //var viewModel = _context.Vehicle.Select(v => ToVehicleViewModel(v));
+            var vehicles = VehicleSearch(regNum,_context.Vehicle);
             var temp = _context.Vehicle.Select(v => v).Include(v => v.Color).Include(v => v.VehicleType).Include(v => v.Owner);
             return View(await temp.ToListAsync());
+        }
+
+        private IQueryable<Vehicle> VehicleSearch(string regNum, DbSet<Vehicle> vehicles)
+        {
+            return string.IsNullOrWhiteSpace(regNum) ? 
+                vehicles :
+                vehicles.Where(v => v.RegNum.ToUpper().StartsWith(regNum.ToUpper()));
         }
 
 
@@ -167,7 +172,7 @@ namespace Garage_3.Controllers
         [HttpPost]
         public JsonResult RegNumExists(string RegNum)
         {
-            return Json(_context.Vehicle.Any(v => v.RegNum.ToUpper() == RegNum.ToUpper()) == false);
+            return Json(VehicleExists(RegNum) == false);
         }
 
         public IActionResult Park()
@@ -305,11 +310,15 @@ namespace Garage_3.Controllers
 
         private bool VehicleExists(string id)
         {
-            return _context.Vehicle.Any(e => e.RegNum == id);
+            return _context.Vehicle.Any(v => v.RegNum.ToUpper() == id.ToUpper());
         }
-        public async Task<IActionResult> OwnerIndex()
+
+        public async Task<IActionResult> OwnerIndex(string input)
         {
-            return View(await _context.Owners.ToListAsync());
+            var owners = string.IsNullOrWhiteSpace(input) ? 
+                _context.Owners : 
+                _context.Owners.Where(v => v.UserName.ToUpper().StartsWith(input.ToUpper()));
+            return View(await owners.ToListAsync());
         }
     }
 }
