@@ -240,6 +240,25 @@ namespace Garage_3.Controllers
             return Json(_context.Owners.Any(o => o.Telephone == Telephone) == false);
         }
 
+        //TODO make this username check work
+        [HttpPost]
+        public JsonResult DoesOwnerExists(string Owner)
+        {
+            return Json(_context.Owners.Any(o => o.UserName == Owner));
+        }
+
+        [HttpPost]
+        public JsonResult DoesVehicleTypeExist(string VehicleType)
+        {
+            return Json(_context.VehicleTypes.Any(vt => vt.VehicleTypeName == VehicleType.ToUpper()));
+        }
+
+        [HttpPost]
+        public JsonResult DoesColorTypeExist(string ColorName)
+        {
+            return Json(_context.Colors.Any(c => c.ColorName == ColorName.ToUpper()));
+        }
+
         // GET: Vehicles/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -253,7 +272,23 @@ namespace Garage_3.Controllers
             {
                 return NotFound();
             }
-            return View(vehicle);
+
+            var model = ToEditViewModel(vehicle);
+            return View(model);
+        }
+        
+        private EditVehicleViewModel ToEditViewModel(Vehicle vehicle)
+        {
+            return new EditVehicleViewModel
+            {
+                RegNum = vehicle.RegNum,
+                Brand = vehicle.Brand,
+                Model = vehicle.Model,
+                Wheels = (int)vehicle.Wheels,
+                Owner = _context.Owners.Find(vehicle.MemberNumber).UserName,
+                ColorName = _context.Colors.Find(vehicle.ColorId).ColorName,
+                VehicleType = _context.VehicleTypes.Find(vehicle.TypeID).VehicleTypeName
+            };
         }
 
         // POST: Vehicles/Edit/5
@@ -261,15 +296,23 @@ namespace Garage_3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("RegNum,Wheels,Model,Brand,ArrivalTime,Color,MemberNumber,TypeID")] Vehicle vehicle)
+        public async Task<IActionResult> Edit(string id, [Bind("RegNum,Wheels,Model,Brand,ColorName,VehicleType,Owner")] EditVehicleViewModel editVehicle)
         {
-            if (id != vehicle.RegNum)
+            var vehicle = _context.Vehicle.Find(id);
+
+            if (vehicle == null)
             {
                 return NotFound();
             }
-
+            
             if (ModelState.IsValid)
             {
+                vehicle.Wheels = editVehicle.Wheels;
+                vehicle.Model = editVehicle.Model;
+                vehicle.Brand = editVehicle.Brand;
+                vehicle.Color = _context.Colors.FirstOrDefault(c=> c.ColorName== editVehicle.ColorName.ToUpper());
+                vehicle.Owner = _context.Owners.FirstOrDefault(o => o.UserName == editVehicle.Owner);
+                vehicle.VehicleType = _context.VehicleTypes.FirstOrDefault(vt => vt.VehicleTypeName == editVehicle.VehicleType.ToUpper());
                 try
                 {
                     _context.Update(vehicle);
@@ -288,7 +331,7 @@ namespace Garage_3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(vehicle);
+            return View();
         }
 
         // GET: Vehicles/Delete/5
