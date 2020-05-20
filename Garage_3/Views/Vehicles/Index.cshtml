@@ -42,13 +42,17 @@
             <tr>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.RegNum)
+                    <a asp-action="Details" asp-route-id="@item.RegNum">
+                        @Html.DisplayFor(modelItem => item.RegNum)
+                    </a>                 
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Color.ColorName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Owner.UserName)
+                    <a asp-action="Profile" asp-route-id="@item.MemberNumber">
+                        @Html.DisplayFor(modelItem => item.Owner.UserName)
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
@@ -56,7 +60,6 @@
                
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.RegNum">Redigera</a> |
-                    <a asp-action="Details" asp-route-id="@item.RegNum">Detaljer</a> |
                     <a asp-action="Delete" asp-route-id="@item.RegNum">Ta bort</a>
                 </td>
             </tr>

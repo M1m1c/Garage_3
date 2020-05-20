@@ -418,5 +418,15 @@ namespace Garage_3.Controllers
                 VehicleCount = _context.Vehicle.Select(v => v.MemberNumber == owner.MemberNumber).Count()          
             };
         }
+
+        public async Task<IActionResult> ParkedVehicles(string regNum)
+        {
+            var search = VehicleSearch(regNum, _context.Vehicle);
+           
+            var include = search.Include(v => v.Owner).Include(v => v.Color).Include(v => v.VehicleType);
+            
+            var vehicles = include.Where(v => v.ParkedFlag == true);
+            return View(await vehicles.ToListAsync());
+        }
     }
 }

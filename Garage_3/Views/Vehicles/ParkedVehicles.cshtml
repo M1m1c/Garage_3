@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Garage_3.Models.Vehicle>
+
+@{
+    ViewData["Title"] = "ParkedVehicles";
+}
+
+<h1>Parkerade fordon</h1>
+
+<form asp-action="ParkedVehicles">
+    <div class="input-group">
+        <input type="text" name="regNum" class="form-control" placeholder="Sök fordon..." />
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-outline-primary px-4 font-weight-bold">
+                Sök <i class="fas fa-search m1-2"></i>
+            </button>
+        </div>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RegNum)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ArrivalTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Owner.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VehicleType.VehicleTypeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Color.ColorName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.RegNum">
+                    @Html.DisplayFor(modelItem => item.RegNum)
+                </a>
+            </td>      
+            <td>
+                @Html.DisplayFor(modelItem => item.ArrivalTime)
+            </td>         
+            <td>
+                <a asp-action="Profile" asp-route-id="@item.MemberNumber">
+                    @Html.DisplayFor(modelItem => item.Owner.UserName)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Color.ColorName)
+            </td>
+           
+        </tr>
+}
+    </tbody>
+</table>
