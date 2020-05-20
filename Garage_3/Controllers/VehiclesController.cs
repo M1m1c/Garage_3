@@ -175,22 +175,21 @@ namespace Garage_3.Controllers
             return Json(VehicleExists(RegNum) == false);
         }
 
-        public IActionResult Park()
+        public void Park(string regNum)
         {
-            return View();
-        }
+            var vehicle = _context.Vehicle.Find(regNum);
 
-        public void Park(int? id)
-        {
-            var vehicle = _context.Vehicle.Find(id);
-            if (vehicle.ParkedFlag==true)
+            if (vehicle != null)
             {
-                vehicle.ParkedFlag = false;
-            }
-            else
-            {
-                vehicle.ParkedFlag = true;
-            }       
+                if (vehicle.ParkedFlag == true)
+                {
+                    vehicle.ParkedFlag = false;
+                }
+                else
+                {
+                    vehicle.ParkedFlag = true;
+                }
+            }      
         }
 
         public IActionResult AddOwner()
