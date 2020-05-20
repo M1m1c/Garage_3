@@ -93,18 +93,17 @@ namespace Garage_3.Controllers
         public async Task<IActionResult> AddVehicle(int? id, [Bind("RegNum,Wheels,Model,Brand,ColorName,VehicleType")] AddVehicleViewModel viewModel)
         {
 
-            viewModel.RegNum.ToUpper();
-
             if (ModelState.IsValid)
             {
                 var vehicle = new Vehicle {
-                    RegNum = viewModel.RegNum,
+                    RegNum = viewModel.RegNum.ToUpper(),
                     Wheels = viewModel.Wheels,
                     Model = viewModel.Model,
                     Brand = viewModel.Brand
                 };
 
-                vehicle.ArrivalTime = DateTime.Now;
+                //TODO Move to Park
+                //vehicle.ArrivalTime = DateTime.Now;
 
                 int tempColorId = ColorSetup(viewModel.ColorName);
 
@@ -176,9 +175,19 @@ namespace Garage_3.Controllers
             return View();
         }
 
-        /* public async Task<IActionResult> Park(int? id)
-         { 
-         }*/
+        public void Park(int? id)
+        {
+            var vehicle = _context.Vehicle.Find(id);
+            if (vehicle.ParkedFlag==true)
+            {
+                vehicle.ParkedFlag = false;
+            }
+            else
+            {
+                vehicle.ParkedFlag = true;
+            }       
+        }
+
         public IActionResult AddOwner()
         {
             return View();
