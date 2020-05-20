@@ -1,75 +1,85 @@
 ﻿@model Garage_3.Models.ViewModel.Profile
 
-    <div class="container">
+<div class="container">
 
 
-        <div class="card">
-            <h4 class="card-header">@Model.FirstName @Model.LastName</h4>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-sm">
-                        <dl class="row">
-                            <dt class="col-sm-4">
-                                @Html.DisplayNameFor(model => model.UserName)
-                            </dt>
-                            <dd class="col-sm-8">
-                                @Html.DisplayFor(model => model.UserName)
-                            </dd>
-                            <dt class="col-sm-4">
-                                @Html.DisplayNameFor(model => model.FirstName)
-                            </dt>
-                            <dd class="col-sm-8">
-                                @Html.DisplayFor(model => model.FirstName)
-                            </dd>
-                            <dt class="col-sm-4">
-                                @Html.DisplayNameFor(model => model.LastName)
-                            </dt>
-                            <dd class="col-sm-8">
-                                @Html.DisplayFor(model => model.LastName)
-                            </dd>
-                            <dt class="col-sm-4">
-                                @Html.DisplayNameFor(model => model.Telephone)
-                            </dt>
-                            <dd class="col-sm-8">
-                                @Html.DisplayFor(model => model.Telephone)
-                            </dd>
-                            <dt class="col-sm-4">
-                                @Html.DisplayNameFor(model => model.Email)
-                            </dt>
-                            <dd class="col-sm-8">
-                                @Html.DisplayFor(model => model.Email)
-                            </dd>
-                        </dl>
-                        <p>
-                            <a asp-action="AddVehicle" asp-route-id="@Model.MemberNumber" class="btn btn-success m-2">Lägg till fordon</a>
-                            <a asp-action="Park" class="btn btn-success m-2">Parkera ett fordon</a>
-                        </p>
-                    </div>
+    <div class="card">
+        <h4 class="card-header">@Model.FirstName @Model.LastName</h4>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm">
+                    <dl class="row">
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.UserName)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.UserName)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.FirstName)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.FirstName)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.LastName)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.LastName)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.Telephone)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.Telephone)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.Email)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.Email)
+                        </dd>
+                    </dl>
+                    <p>
+                        <a asp-action="AddVehicle" asp-route-id="@Model.MemberNumber" class="btn btn-success m-2">Lägg till fordon</a>
+                        <a asp-action="Park" class="btn btn-success m-2">Parkera ett fordon</a>
+                    </p>
+                </div>
 
-                    <div class="col-sm">
-                        <h4>Ägda fordon</h4>
-                        <dl class="row">
-                            @if (Model.Vehicles != null)
-                            {
-                                @foreach (var vehicle in Model.Vehicles)
-                                {
-                                    <dd class="col-sm-3">
-                                        @Html.DisplayFor(v => vehicle.RegNum)
-                                    </dd>
+                <div class="col-sm">
+                    <h4>Ägda fordon</h4>
+                    @if (Model.Vehicles.Count()>0)
+                    {
+                        @foreach (var vehicle in Model.Vehicles)
+                        {
+                            <dl class="row">
+                                <dt class="col-sm-3">
+                                    @Html.DisplayFor(v => vehicle.RegNum)
+                                </dt>
+                                <dd class="col-sm-9">
+                                    @if (vehicle.ParkedFlag == true)
+                                    {
+                                        <div class="badge badge-success p-1">Parkerad</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="badge badge-secondary p-1">Ej parkerad</div>
+                                    }
+                                </dd>
+                            </dl>
 
-                                }
-                            }
-                            else
-                            {
-                                <dd class="col">Inga fordon.</dd>
-                            }
+                        }
+                    }
+                    else
+                    {
+                        <div class="col">Inga fordon.</div>
+                    }
 
-                        </dl>
 
-                        
-                    </div>
+
                 </div>
             </div>
         </div>
-        
     </div>
+
+</div>
