@@ -35,13 +35,15 @@ namespace Garage_3.Models
         [Display(Name = "Medlemsnummer")]
         public int MemberNumber { get; set; }
         
-        [Display(Name = "Fordonstyp")]
+        [Display(Name = "Fordonstyp (num)")]
         public int TypeID { get; set; }
         
         public int ColorId { get; set; }
 
         //Navigation property
         public Owner Owner { get; set; }
+        
+        [Display(Name = "Fordonstyp")]
         public VehicleType VehicleType { get; set; }
         
         [Display(Name = "Färg")]
