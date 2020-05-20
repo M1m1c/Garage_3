@@ -32,9 +32,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.VehicleType.VehicleTypeName)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArrivalTime)
-            </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -55,10 +53,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ArrivalTime)
-                </td>
-
+               
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.RegNum">Redigera</a> |
                     <a asp-action="Details" asp-route-id="@item.RegNum">Detaljer</a> |

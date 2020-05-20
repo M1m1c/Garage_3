@@ -400,7 +400,23 @@ namespace Garage_3.Controllers
             var owners = string.IsNullOrWhiteSpace(input) ? 
                 _context.Owners : 
                 _context.Owners.Where(v => v.UserName.ToUpper().StartsWith(input.ToUpper()));
-            return View(await owners.ToListAsync());
+
+            var list = await owners.ToListAsync();
+
+            var model = list.Select(o => ToOwnerIndex(o));
+
+            return View(model);
+        }
+
+        public OwnerIndexViewModel ToOwnerIndex(Owner owner)
+        {
+            return new OwnerIndexViewModel {
+                MemberNumber = owner.MemberNumber,
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                UserName = owner.UserName,
+                VehicleCount = _context.Vehicle.Select(v => v.MemberNumber == owner.MemberNumber).Count()          
+            };
         }
     }
 }

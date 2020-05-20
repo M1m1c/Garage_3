@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_3.Models.Owner>
+﻿@model IEnumerable<Garage_3.Models.ViewModel.OwnerIndexViewModel>
 
 @{
     ViewData["Title"] = "OwnerIndex";
@@ -31,7 +31,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.VehicleCount)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -47,8 +49,11 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                <a asp-action="Profile" asp-route-id="@item.MemberNumber">Visa Profil</a> 
-                
+               @Html.DisplayFor(modelItem => item.VehicleCount)
+            </td>
+            <td>
+                <a asp-action="Profile" asp-route-id="@item.MemberNumber">Visa Profil</a>
+
             </td>
         </tr>
 }
