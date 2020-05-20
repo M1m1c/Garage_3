@@ -116,9 +116,7 @@ namespace Garage_3.Controllers
                     Brand = viewModel.Brand
                 };
 
-                //TODO Move to Park
-                //vehicle.ArrivalTime = DateTime.Now;
-
+                
                 int tempColorId = ColorSetup(viewModel.ColorName);
 
                 vehicle.ColorId = tempColorId;
@@ -193,10 +191,12 @@ namespace Garage_3.Controllers
                 if (vehicle.ParkedFlag == true)
                 {
                     vehicle.ParkedFlag = false;
+
                 }
                 else
                 {
                     vehicle.ParkedFlag = true;
+                    vehicle.ArrivalTime = DateTime.Now;
                 }
                 _context.SaveChanges();
             return RedirectToAction(nameof(Profile), new { id= vehicle.MemberNumber});
