@@ -9,6 +9,7 @@ namespace Garage_3.Models.ViewModel
 {
     public class EditVehicleViewModel
     {
+        [Required]
         [Display(Name = "Regnummer")]
         public string RegNum { get; set; }
 
@@ -38,6 +39,9 @@ namespace Garage_3.Models.ViewModel
         [Remote(action: "DoesOwnerExists", controller: "Vehicles", HttpMethod = "POST", ErrorMessage = "Finns ingen användare med det användarnamnet")]
         [Display(Name = "Ägare")]
         public string Owner { get; set; }
+
+        
+        
     }
 }
 

@@ -229,21 +229,21 @@ namespace Garage_3.Controllers
 
         //TODO make this username check work
         [HttpPost]
-        public JsonResult DoesOwnerExists(string userName)
+        public JsonResult DoesOwnerExists(string Owner)
         {
-            return Json(_context.Owners.Any(o => o.UserName == userName));
+            return Json(_context.Owners.Any(o => o.UserName == Owner));
         }
 
         [HttpPost]
-        public JsonResult DoesVehicleTypeExist(string typeName)
+        public JsonResult DoesVehicleTypeExist(string VehicleType)
         {
-            return Json(_context.VehicleTypes.Any(vt => vt.VehicleTypeName == typeName.ToUpper()));
+            return Json(_context.VehicleTypes.Any(vt => vt.VehicleTypeName == VehicleType.ToUpper()));
         }
 
         [HttpPost]
-        public JsonResult DoesColorTypeExist(string colorName)
+        public JsonResult DoesColorTypeExist(string ColorName)
         {
-            return Json(_context.Colors.Any(c => c.ColorName == colorName.ToUpper()));
+            return Json(_context.Colors.Any(c => c.ColorName == ColorName.ToUpper()));
         }
 
         // GET: Vehicles/Edit/5
@@ -283,17 +283,17 @@ namespace Garage_3.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("RegNum,Wheels,Model,Brand,ColorName,Owner,VehicleType")] EditVehicleViewModel editVehicle)
+        public async Task<IActionResult> Edit(string id, [Bind("RegNum,Wheels,Model,Brand,ColorName,VehicleType,Owner")] EditVehicleViewModel editVehicle)
         {
-            if (_context.Vehicle.Any(v=> v.RegNum == id))
+            var vehicle = _context.Vehicle.Find(id);
+
+            if (vehicle == null)
             {
                 return NotFound();
             }
-
+            
             if (ModelState.IsValid)
             {
-                var vehicle = _context.Vehicle.Find(id);
-
                 vehicle.Wheels = editVehicle.Wheels;
                 vehicle.Model = editVehicle.Model;
                 vehicle.Brand = editVehicle.Brand;
@@ -318,7 +318,7 @@ namespace Garage_3.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(editVehicle);
+            return View();
         }
 
         // GET: Vehicles/Delete/5
