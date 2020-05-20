@@ -26,7 +26,7 @@ namespace Garage_3.Controllers
         public async Task<IActionResult> Index(string regNum)
         {
             var vehicles = VehicleSearch(regNum,_context.Vehicle);
-            var temp = _context.Vehicle.Select(v => v).Include(v => v.Color).Include(v => v.VehicleType).Include(v => v.Owner);
+            var temp = vehicles.Select(v => v).Include(v => v.Color).Include(v => v.VehicleType).Include(v => v.Owner);
             return View(await temp.ToListAsync());
         }
 
