@@ -26,7 +26,8 @@ namespace Garage_3.Models
 
         [Display(Name = "Ankomsttid")]
         public DateTime ArrivalTime { get; set; }
-
+        [Display(Name = "Lämnar")]
+        public DateTime DepartureTime { get; set; }
         public bool ParkedFlag { get; set; }
 
 
