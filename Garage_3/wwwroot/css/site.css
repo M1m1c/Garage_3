@@ -13,9 +13,9 @@ a.navbar-brand {
     border: black 5px solid;
     border-radius:5%;
 }
-.navbar-nav{
+/*.navbar-nav{
     font-size:large;
-}
+}*/
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
