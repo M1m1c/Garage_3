@@ -7,14 +7,14 @@
 <h1>Fordon</h1>
 
 <form asp-action="Index">
-<div class="input-group">
-    <input type="text" name="regNum" class="form-control" placeholder="Sök regnummer..." />
-    <div class="input-group-append">
-        <button type="submit" class="btn btn-outline-primary px-4 font-weight-bold">
-            Sök <i class="fas fa-search m1-2"></i>
-        </button>
+    <div class="input-group">
+        <input type="text" name="regNum" class="form-control" placeholder="Sök regnummer..." />
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-outline-primary px-4 font-weight-bold">
+                Sök <i class="fas fa-search m1-2"></i>
+            </button>
+        </div>
     </div>
-</div>
 </form>
 
 <table class="table">
@@ -32,37 +32,45 @@
             <th>
                 @Html.DisplayNameFor(model => model.VehicleType.VehicleTypeName)
             </th>
-            
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @if (Model.Count() > 0)
         {
-            <tr>
 
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.RegNum">
-                        @Html.DisplayFor(modelItem => item.RegNum)
-                    </a>                 
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Color.ColorName)
-                </td>
-                <td>
-                    <a asp-controller="Owner" asp-action="Profile" asp-route-id="@item.MemberNumber">
-                        @Html.DisplayFor(modelItem => item.Owner.UserName)
-                    </a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
-                </td>
-               
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.RegNum">Redigera</a> |
-                    <a asp-action="Delete" asp-route-id="@item.RegNum">Ta bort</a>
-                </td>
-            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.RegNum">
+                            @Html.DisplayFor(modelItem => item.RegNum)
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Color.ColorName)
+                    </td>
+                    <td>
+                        <a asp-controller="Owner" asp-action="Profile" asp-route-id="@item.MemberNumber">
+                            @Html.DisplayFor(modelItem => item.Owner.UserName)
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
+                    </td>
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.RegNum">Redigera</a> |
+                        <a asp-action="Delete" asp-route-id="@item.RegNum">Ta bort</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr><td colspan="5" class="text-center">Inga fordon att visa</td></tr>
         }
     </tbody>
 </table>
