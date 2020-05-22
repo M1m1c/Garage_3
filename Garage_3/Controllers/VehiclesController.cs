@@ -182,7 +182,11 @@ namespace Garage_3.Controllers
                 vehicle.Wheels = editVehicle.Wheels;
                 vehicle.Model = editVehicle.Model;
                 vehicle.Brand = editVehicle.Brand;
-                vehicle.Owner = _context.Owners.FirstOrDefault(o => o.UserName == editVehicle.Owner);
+
+                var owner= _context.Owners.FirstOrDefault(o => o.UserName == editVehicle.Owner);
+
+                vehicle.Owner = owner;
+                vehicle.MemberNumber = owner.MemberNumber;
 
                 int tempColorId = ColorSetup(editVehicle.ColorName);
 
