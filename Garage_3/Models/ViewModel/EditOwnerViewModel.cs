@@ -12,7 +12,7 @@ namespace Garage_3.Models.ViewModel
         [Display(Name = "Medlemsnummer")]
         public int MemberNumber { get; set; }
 
-        [Remote(action: "UserNameSameOrUnique", controller: "Vehicles", HttpMethod = "POST", AdditionalFields = nameof(MemberNumber), ErrorMessage = "Användar Namnet finns redan")]
+        [Remote(action: "UserNameSameOrUnique", controller: "Remote", HttpMethod = "POST", AdditionalFields = nameof(MemberNumber), ErrorMessage = "Användar Namnet finns redan")]
         [Display(Name = "Användarnamn")]
         public string UserName { get; set; }
 
@@ -22,11 +22,11 @@ namespace Garage_3.Models.ViewModel
         [Display(Name = "Efternamn")]
         public string LastName { get; set; }
 
-        [Remote(action: "EmailSameOrUnique", controller: "Vehicles", HttpMethod = "POST", AdditionalFields = nameof(MemberNumber), ErrorMessage = "Emailadressen används redan")]
+        [Remote(action: "EmailSameOrUnique", controller: "Remote", HttpMethod = "POST", AdditionalFields = nameof(MemberNumber), ErrorMessage = "Emailadressen används redan")]
         [Display(Name = "E-post")]
         public string Email { get; set; }
 
-        [Remote(action: "PhoneSameOrUnique", controller: "Vehicles", HttpMethod = "POST", AdditionalFields = nameof(MemberNumber), ErrorMessage = "Telefonnumret används redan")]
+        [Remote(action: "PhoneSameOrUnique", controller: "Remote", HttpMethod = "POST", AdditionalFields = nameof(MemberNumber), ErrorMessage = "Telefonnumret används redan")]
         [Display(Name = "Telefon")]
         public string Telephone { get; set; }
     }

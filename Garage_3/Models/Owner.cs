@@ -14,7 +14,7 @@ namespace Garage_3.Models
         [Display(Name = "Medlemsnummer")]
         public int MemberNumber { get; set; }
 
-        [Remote(action: "UserNameExists",controller:"Vehicles",HttpMethod ="POST",ErrorMessage ="Användar Namnet finns redan")]
+        [Remote(action: "UserNameExists",controller:"Remote",HttpMethod ="POST",ErrorMessage ="Användar Namnet finns redan")]
         [Display(Name = "Användarnamn")]
         public string UserName { get; set; }
         
@@ -24,11 +24,11 @@ namespace Garage_3.Models
         [Display(Name = "Efternamn")]
         public string LastName { get; set; }
 
-        [Remote(action: "EmailExists", controller: "Vehicles", HttpMethod = "POST", ErrorMessage = "Emailadressen används redan")]
+        [Remote(action: "EmailExists", controller: "Remote", HttpMethod = "POST", ErrorMessage = "Emailadressen används redan")]
         [Display(Name = "E-post")]
         public string Email { get; set; }
 
-        [Remote(action: "PhoneExists", controller: "Vehicles", HttpMethod = "POST", ErrorMessage = "Telefonnumret används redan")]
+        [Remote(action: "PhoneExists", controller: "Remote", HttpMethod = "POST", ErrorMessage = "Telefonnumret används redan")]
         [Display(Name = "Telefon")]
         public string Telephone { get; set; }
 

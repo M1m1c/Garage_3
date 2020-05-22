@@ -54,7 +54,7 @@
                         {
                             <dl class="row">
                                 <dt class="col-sm-3">
-                                    <a asp-action="Details" asp-route-id="@vehicle.RegNum" class="text-dark">
+                                    <a asp-controller="Vehicles" asp-action="Details" asp-route-id="@vehicle.RegNum" class="text-dark">
                                         @Html.DisplayFor(v => vehicle.RegNum)
                                     </a>
                                 </dt>

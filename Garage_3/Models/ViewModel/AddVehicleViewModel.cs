@@ -10,7 +10,7 @@ namespace Garage_3.Models.ViewModel
     public class AddVehicleViewModel
     {
         [Required]
-        [Remote(action: "RegNumExists", controller: "Vehicles", HttpMethod = "POST", ErrorMessage = "Registreringsnummer finns redan")]
+        [Remote(action: "RegNumExists", controller: "Remote", HttpMethod = "POST", ErrorMessage = "Registreringsnummer finns redan")]
         [Display(Name = "Regnummer")]
         public string RegNum { get; set; }
         

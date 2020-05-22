@@ -179,7 +179,17 @@ namespace Garage_3.Controllers
 
             _context.Owners.Remove(owner);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(VehiclesController.Index));
+            return RedirectToAction(nameof(OwnerIndex));
+        }
+
+        public IActionResult Return(string user)
+        {
+            var owner = _context.Owners.FirstOrDefault(o => o.UserName == user);
+            if (owner != null)
+            {
+                return RedirectToAction(nameof(Profile), new { id = owner.MemberNumber });
+            }
+            return NotFound();
         }
 
         public OwnerIndexViewModel ToOwnerIndex(Owner owner)

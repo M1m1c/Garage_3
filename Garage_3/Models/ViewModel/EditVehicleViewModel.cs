@@ -26,17 +26,17 @@ namespace Garage_3.Models.ViewModel
         public string Brand { get; set; }
 
         [Required(ErrorMessage = "Ange färg")]
-        [Remote(action: "DoesColorTypeExist", controller: "Vehicles", HttpMethod = "POST", ErrorMessage = "Finns ingen färg vid det namnet")]
+        //[Remote(action: "DoesColorTypeExist", controller: "Remote", HttpMethod = "POST", ErrorMessage = "Finns ingen färg vid det namnet")]
         [Display(Name = "Färg")]
         public string ColorName { get; set; }
 
         [Required(ErrorMessage = "Ange fordonstyp")]
-        [Remote(action: "DoesVehicleTypeExist", controller: "Vehicles", HttpMethod = "POST", ErrorMessage = "Finns ingen fordonstyp vid det namnet")]
+        //[Remote(action: "DoesVehicleTypeExist", controller: "Remote", HttpMethod = "POST", ErrorMessage = "Finns ingen fordonstyp vid det namnet")]
         [Display(Name = "Fordonstyp")]
         public string VehicleType { get; set; }
 
         [Required(ErrorMessage = "Ange ägare")]
-        [Remote(action: "DoesOwnerExists", controller: "Vehicles", HttpMethod = "POST", ErrorMessage = "Finns ingen användare med det användarnamnet")]
+        [Remote(action: "DoesOwnerExists", controller: "Remote", HttpMethod = "POST", ErrorMessage = "Finns ingen användare med det användarnamnet")]
         [Display(Name = "Ägare")]
         public string Owner { get; set; }
 

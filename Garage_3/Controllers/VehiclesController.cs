@@ -57,16 +57,6 @@ namespace Garage_3.Controllers
             return View(vehicle);
         }
 
-        public IActionResult Return(string user)
-        {
-            var owner = _context.Owners.FirstOrDefault(o => o.UserName == user);
-            if (owner != null)
-            {
-                return RedirectToAction(nameof(Profile), new { id = owner.MemberNumber });
-            }
-            return NotFound();
-        }
-
         // GET: Vehicles/Create
         public IActionResult AddVehicle(int? id)
         {
@@ -192,9 +182,21 @@ namespace Garage_3.Controllers
                 vehicle.Wheels = editVehicle.Wheels;
                 vehicle.Model = editVehicle.Model;
                 vehicle.Brand = editVehicle.Brand;
-                vehicle.Color = _context.Colors.FirstOrDefault(c => c.ColorName == editVehicle.ColorName.ToUpper());
                 vehicle.Owner = _context.Owners.FirstOrDefault(o => o.UserName == editVehicle.Owner);
-                vehicle.VehicleType = _context.VehicleTypes.FirstOrDefault(vt => vt.VehicleTypeName == editVehicle.VehicleType.ToUpper());
+
+                int tempColorId = ColorSetup(editVehicle.ColorName);
+
+                vehicle.ColorId = tempColorId;
+
+                vehicle.Color = _context.Colors.Find(tempColorId);
+
+
+                int tempTypeId = VehicleTypeSetup(editVehicle.VehicleType);
+
+                vehicle.TypeID = tempTypeId;
+
+                vehicle.VehicleType = _context.VehicleTypes.Find(tempTypeId);
+
                 try
                 {
                     _context.Update(vehicle);
@@ -337,66 +339,6 @@ namespace Garage_3.Controllers
         }
 
      
-        //------------------------------------REMOTES------------------------------------------------------------------
-
-        [HttpPost]
-        public JsonResult RegNumExists(string RegNum)
-        {
-            return Json(VehicleExists(RegNum) == false);
-        }
-
-        [HttpPost]
-        public JsonResult UserNameExists(string UserName)
-        {
-            return Json(_context.Owners.Any(o => o.UserName == UserName) == false);
-        }
-
-        [HttpPost]
-        public JsonResult EmailExists(string Email)
-        {
-            return Json(_context.Owners.Any(o => o.Email == Email) == false);
-        }
-
-        [HttpPost]
-        public JsonResult PhoneExists(string Telephone)
-        {
-            return Json(_context.Owners.Any(o => o.Telephone == Telephone) == false);
-        }
-
-        [HttpPost]
-        public JsonResult DoesOwnerExists(string Owner)
-        {
-            return Json(_context.Owners.Any(o => o.UserName == Owner));
-        }
-
-        [HttpPost]
-        public JsonResult DoesVehicleTypeExist(string VehicleType)
-        {
-            return Json(_context.VehicleTypes.Any(vt => vt.VehicleTypeName == VehicleType.ToUpper()));
-        }
-
-        [HttpPost]
-        public JsonResult DoesColorTypeExist(string ColorName)
-        {
-            return Json(_context.Colors.Any(c => c.ColorName == ColorName.ToUpper()));
-        }
-
-        [HttpPost]
-        public JsonResult UserNameSameOrUnique(string UserName, int MemberNumber)
-        {
-            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.UserName == UserName) == false);
-        }
-
-        [HttpPost]
-        public JsonResult EmailSameOrUnique(string Email, int MemberNumber)
-        {
-            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.Email == Email) == false);
-        }
-
-        [HttpPost]
-        public JsonResult PhoneSameOrUnique(string Telephone, int MemberNumber)
-        {
-            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.Telephone == Telephone) == false);
-        }
+        
     }
 }

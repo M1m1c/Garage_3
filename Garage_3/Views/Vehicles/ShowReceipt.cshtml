@@ -53,5 +53,5 @@
 </div>
 <hr />
 <h5>- Tack för att du parkerat hos oss! -</h5>
-<a asp-action="Return" asp-route-user="@Model.UserName">Tillbaka till profil</a> |
-<a asp-action="OwnerIndex">Tillbaka till Medlemmar</a>
+<a asp-controller="Owner" asp-action="Return" asp-route-user="@Model.UserName">Tillbaka till profil</a> |
+<a asp-controller="Owner" asp-action="OwnerIndex">Tillbaka till Medlemmar</a>
