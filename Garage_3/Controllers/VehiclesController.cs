@@ -261,28 +261,41 @@ namespace Garage_3.Controllers
             {
                 return NotFound();
             }
+            var model = new EditOwnerViewModel
+            {
+                MemberNumber = owner.MemberNumber,
+                UserName = owner.UserName,
+                Email = owner.Email,
+                Telephone = owner.Telephone,
+                FirstName = owner.FirstName,
+                LastName = owner.LastName
+            };
 
-            return View(owner);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOwner(int memberNumber,[Bind("MemberNumber,UserName,FirstName, LastName, Email, Telephone")] Owner owner)
+        public async Task<IActionResult> EditOwner(int memberNumber,[Bind("MemberNumber,UserName,FirstName, LastName, Email, Telephone")] EditOwnerViewModel owner)
         {
-            //var foundOwner = _context.Owners.Find(memberNumber);
-            if (memberNumber != owner.MemberNumber)
+            var foundOwner = _context.Owners.Find(memberNumber);
+            if (foundOwner == null)
             {
                 return NotFound();
             }
 
-            //owner.MemberNumber = memberNumber;
-
             if (ModelState.IsValid)
             {
+                foundOwner.UserName = owner.UserName;
+                foundOwner.Email = owner.Email;
+                foundOwner.Telephone = owner.Telephone;
+                foundOwner.FirstName = owner.FirstName;
+                foundOwner.LastName = owner.LastName;            
                 
                 try
                 {
-                    _context.Update(owner);
+                    
+                    _context.Update(foundOwner);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -354,7 +367,7 @@ namespace Garage_3.Controllers
             return Json(_context.Owners.Any(o => o.Telephone == Telephone) == false);
         }
 
-        //TODO make this username check work
+       
         [HttpPost]
         public JsonResult DoesOwnerExists(string Owner)
         {
@@ -371,6 +384,24 @@ namespace Garage_3.Controllers
         public JsonResult DoesColorTypeExist(string ColorName)
         {
             return Json(_context.Colors.Any(c => c.ColorName == ColorName.ToUpper()));
+        }
+
+        [HttpPost]
+        public JsonResult UserNameSameOrUnique(string UserName, int MemberNumber)
+        {
+            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.UserName == UserName) == false);
+        }
+
+        [HttpPost]
+        public JsonResult EmailSameOrUnique(string Email, int MemberNumber)
+        {
+            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.Email == Email) == false);
+        }
+
+        [HttpPost]
+        public JsonResult PhoneSameOrUnique(string Telephone, int MemberNumber)
+        {
+            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.Telephone == Telephone) == false);
         }
 
         // GET: Vehicles/Edit/5
