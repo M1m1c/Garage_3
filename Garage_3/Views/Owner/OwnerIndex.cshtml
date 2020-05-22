@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_3.Models.ViewModel.OwnerIndexViewModel>
+﻿@model PaginatedList<Garage_3.Models.ViewModel.OwnerIndexViewModel>
 
 @{
     ViewData["Title"] = "OwnerIndex";
@@ -23,16 +23,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.UserName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleCount)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().VehicleCount)
             </th>
         </tr>
     </thead>
@@ -65,3 +65,19 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="OwnerIndex"
+   asp-route-page="@(Model.PageIndex - 1)"
+   class="btn btn-outline-secondary @prevDisabled">
+    Föregående
+</a>
+<a asp-action="OwnerIndex"
+   asp-route-page="@(Model.PageIndex + 1)"
+   class="btn btn-outline-secondary @nextDisabled">
+    Nästa
+</a>

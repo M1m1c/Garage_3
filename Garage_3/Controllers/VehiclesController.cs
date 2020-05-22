@@ -24,11 +24,18 @@ namespace Garage_3.Controllers
 
         //------------------------------------VEHICLES------------------------------------------------------------------
         // GET: Vehicles
-        public async Task<IActionResult> Index(string regNum)
+        public async Task<IActionResult> Index(string regNum, int? page)
         {
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+
             var vehicles = VehicleSearch(regNum, _context.Vehicle);
-            var temp = vehicles.Select(v => v).Include(v => v.Color).Include(v => v.VehicleType).Include(v => v.Owner);
-            return View(await temp.ToListAsync());
+            var temp = vehicles.Select(v => v)
+                .Include(v => v.Color)
+                .Include(v => v.VehicleType)
+                .Include(v => v.Owner);
+            
+            return View(await PaginatedList<Vehicle>.CreateAsync(temp.AsNoTracking(), pageNumber, pageSize));
         }
 
         private IQueryable<Vehicle> VehicleSearch(string regNum, DbSet<Vehicle> vehicles)
@@ -255,14 +262,17 @@ namespace Garage_3.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> ParkedVehicles(string regNum)
+        public async Task<IActionResult> ParkedVehicles(string regNum, int? page)
         {
-            var search = VehicleSearch(regNum, _context.Vehicle);
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
 
+            var search = VehicleSearch(regNum, _context.Vehicle);
             var include = search.Include(v => v.Owner).Include(v => v.Color).Include(v => v.VehicleType);
 
             var vehicles = include.Where(v => v.ParkedFlag == true);
-            return View(await vehicles.ToListAsync());
+
+            return View(await PaginatedList<Vehicle>.CreateAsync(vehicles.AsNoTracking(), pageNumber, pageSize));
         }
 
         private bool VehicleExists(string id)

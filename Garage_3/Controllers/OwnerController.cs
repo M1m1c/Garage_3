@@ -23,17 +23,19 @@ namespace Garage_3.Controllers
         }
         //------------------------------------OWNER------------------------------------------------------------------
 
-        public async Task<IActionResult> OwnerIndex(string input)
+        public async Task<IActionResult> OwnerIndex(string input, int? page)
         {
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+
             var owners = string.IsNullOrWhiteSpace(input) ?
                 _context.Owners :
                 _context.Owners.Where(v => v.UserName.ToUpper().StartsWith(input.ToUpper()));
 
-            var list = await owners.ToListAsync();
+            var vehicles = await _context.Vehicle.ToListAsync();
+            var model = owners.Select(o => ToOwnerIndex(o, vehicles));
 
-            var model = list.Select(o => ToOwnerIndex(o));
-
-            return View(model);
+            return View(await PaginatedList<OwnerIndexViewModel>.CreateAsync(model.AsNoTracking(), pageNumber, pageSize));
         }
 
         public async Task<IActionResult> Profile(int? id)
@@ -192,7 +194,7 @@ namespace Garage_3.Controllers
             return NotFound();
         }
 
-        public OwnerIndexViewModel ToOwnerIndex(Owner owner)
+        static public OwnerIndexViewModel ToOwnerIndex(Owner owner, IEnumerable<Vehicle> vehicles)
         {
             return new OwnerIndexViewModel
             {
@@ -200,7 +202,7 @@ namespace Garage_3.Controllers
                 FirstName = owner.FirstName,
                 LastName = owner.LastName,
                 UserName = owner.UserName,
-                VehicleCount = _context.Vehicle.Where(v => v.MemberNumber == owner.MemberNumber).Count()
+                VehicleCount = vehicles.Where(v => v.MemberNumber == owner.MemberNumber).Count()
             };
         }
     }

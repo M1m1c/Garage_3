@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_3.Models.Vehicle>
+﻿@model PaginatedList<Garage_3.Models.Vehicle>
 
 @{
     ViewData["Title"] = "ParkedVehicles";
@@ -21,19 +21,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RegNum)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().RegNum)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ArrivalTime)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().ArrivalTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Owner.UserName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Owner.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType.VehicleTypeName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().VehicleType.VehicleTypeName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color.ColorName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Color.ColorName)
             </th>
             <th></th>
         </tr>
@@ -74,3 +74,19 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="ParkedVehicles"
+   asp-route-page="@(Model.PageIndex - 1)"
+   class="btn btn-outline-secondary @prevDisabled">
+    Föregående
+</a>
+<a asp-action="ParkedVehicles"
+   asp-route-page="@(Model.PageIndex + 1)"
+   class="btn btn-outline-secondary @nextDisabled">
+    Nästa
+</a>
