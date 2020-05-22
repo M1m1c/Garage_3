@@ -301,6 +301,41 @@ namespace Garage_3.Controllers
             return View(owner);
         }
 
+        public async Task<IActionResult> DeleteOwner(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var owner = await _context.Owners
+                .FirstOrDefaultAsync(m => m.MemberNumber == id);
+            if (owner == null)
+            {
+                return NotFound();
+            }
+
+            return View(owner);
+        }
+
+        // POST: Vehicles/Delete/5
+        [HttpPost, ActionName("DeleteOwner")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmedOwner(int id)
+        {
+            var owner = await _context.Owners.FindAsync(id);
+            var vehicles = _context.Vehicle.Where(v => v.MemberNumber == owner.MemberNumber);
+
+            foreach (var item in vehicles)
+            {
+                _context.Vehicle.Remove(item);
+            }
+
+            _context.Owners.Remove(owner);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpPost]
         public JsonResult UserNameExists(string UserName)
         {
