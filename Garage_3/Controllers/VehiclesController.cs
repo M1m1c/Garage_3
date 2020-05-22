@@ -22,17 +22,18 @@ namespace Garage_3.Controllers
             _context = context;
         }
 
+        //------------------------------------VEHICLES------------------------------------------------------------------
         // GET: Vehicles
         public async Task<IActionResult> Index(string regNum)
         {
-            var vehicles = VehicleSearch(regNum,_context.Vehicle);
+            var vehicles = VehicleSearch(regNum, _context.Vehicle);
             var temp = vehicles.Select(v => v).Include(v => v.Color).Include(v => v.VehicleType).Include(v => v.Owner);
             return View(await temp.ToListAsync());
         }
 
         private IQueryable<Vehicle> VehicleSearch(string regNum, DbSet<Vehicle> vehicles)
         {
-            return string.IsNullOrWhiteSpace(regNum) ? 
+            return string.IsNullOrWhiteSpace(regNum) ?
                 vehicles :
                 vehicles.Where(v => v.RegNum.ToUpper().StartsWith(regNum.ToUpper()));
         }
@@ -52,44 +53,20 @@ namespace Garage_3.Controllers
             {
                 return NotFound();
             }
-            
+
             return View(vehicle);
         }
-        public async Task<IActionResult> Profile(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var owner = await _context.Owners
-                .FirstOrDefaultAsync(m => m.MemberNumber == id);
-            if (owner == null)
-            {
-                return NotFound();
-            }
-            var model = new Profile
-            {
-                MemberNumber = owner.MemberNumber,
-                FirstName = owner.FirstName,
-                LastName = owner.LastName,
-                UserName = owner.UserName,
-                Telephone = owner.Telephone,
-                Email = owner.Email,
-                Vehicles = await _context.Vehicle.Where(o=> o.MemberNumber==owner.MemberNumber).ToListAsync()
-            };
-
-            return View(model);
-        }
         public IActionResult Return(string user)
         {
             var owner = _context.Owners.FirstOrDefault(o => o.UserName == user);
-            if (owner!=null)
+            if (owner != null)
             {
-               return RedirectToAction(nameof(Profile), new { id = owner.MemberNumber });
+                return RedirectToAction(nameof(Profile), new { id = owner.MemberNumber });
             }
             return NotFound();
         }
+
         // GET: Vehicles/Create
         public IActionResult AddVehicle(int? id)
         {
@@ -110,14 +87,15 @@ namespace Garage_3.Controllers
 
             if (ModelState.IsValid)
             {
-                var vehicle = new Vehicle {
+                var vehicle = new Vehicle
+                {
                     RegNum = viewModel.RegNum.ToUpper(),
                     Wheels = viewModel.Wheels,
                     Model = viewModel.Model,
                     Brand = viewModel.Brand
                 };
 
-                
+
                 int tempColorId = ColorSetup(viewModel.ColorName);
 
                 vehicle.ColorId = tempColorId;
@@ -143,6 +121,147 @@ namespace Garage_3.Controllers
             }
 
             return View(viewModel);
+        }
+
+
+        //[HttpPost]
+        public IActionResult Park(string regNum)
+        {
+            var vehicle = _context.Vehicle.Find(regNum);
+
+            if (vehicle != null)
+            {
+                if (vehicle.ParkedFlag == true)
+                {
+                    vehicle.ParkedFlag = false;
+                    vehicle.DepartureTime = DateTime.Now;
+                }
+                else
+                {
+                    vehicle.ParkedFlag = true;
+                    vehicle.ArrivalTime = DateTime.Now;
+                }
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Profile), new { id = vehicle.MemberNumber });
+            }
+            return NotFound();
+
+        }
+
+        public async Task<IActionResult> ShowReceipt(string regNum)
+        {
+            var vehicle = await _context.Vehicle.FindAsync(regNum);
+            var model = ToReceiptViewModel(vehicle);
+            return View(model);
+        }
+
+        // GET: Vehicles/Edit/5
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = await _context.Vehicle.FindAsync(id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            var model = ToEditViewModel(vehicle);
+            return View(model);
+        }
+
+        // POST: Vehicles/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("RegNum,Wheels,Model,Brand,ColorName,VehicleType,Owner")] EditVehicleViewModel editVehicle)
+        {
+            var vehicle = _context.Vehicle.Find(id);
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                vehicle.Wheels = editVehicle.Wheels;
+                vehicle.Model = editVehicle.Model;
+                vehicle.Brand = editVehicle.Brand;
+                vehicle.Color = _context.Colors.FirstOrDefault(c => c.ColorName == editVehicle.ColorName.ToUpper());
+                vehicle.Owner = _context.Owners.FirstOrDefault(o => o.UserName == editVehicle.Owner);
+                vehicle.VehicleType = _context.VehicleTypes.FirstOrDefault(vt => vt.VehicleTypeName == editVehicle.VehicleType.ToUpper());
+                try
+                {
+                    _context.Update(vehicle);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!VehicleExists(vehicle.RegNum))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        // GET: Vehicles/Delete/5
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = await _context.Vehicle.Include(v => v.Color)
+                .Include(v => v.VehicleType)
+                .Include(v => v.Owner)
+                .FirstOrDefaultAsync(m => m.RegNum == id);
+
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+
+            return View(vehicle);
+        }
+
+        // POST: Vehicles/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var vehicle = await _context.Vehicle.FindAsync(id);
+            _context.Vehicle.Remove(vehicle);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> ParkedVehicles(string regNum)
+        {
+            var search = VehicleSearch(regNum, _context.Vehicle);
+
+            var include = search.Include(v => v.Owner).Include(v => v.Color).Include(v => v.VehicleType);
+
+            var vehicles = include.Where(v => v.ParkedFlag == true);
+            return View(await vehicles.ToListAsync());
+        }
+
+        private bool VehicleExists(string id)
+        {
+            return _context.Vehicle.Any(v => v.RegNum.ToUpper() == id.ToUpper());
         }
 
         private int ColorSetup(string colorName)
@@ -177,59 +296,51 @@ namespace Garage_3.Controllers
             return tempColorId;
         }
 
-        [HttpPost]
-        public JsonResult RegNumExists(string RegNum)
-        {
-            return Json(VehicleExists(RegNum) == false);
-        }
-        //[HttpPost]
-        public IActionResult Park(string regNum)
-        {
-            var vehicle = _context.Vehicle.Find(regNum);
 
-            if (vehicle != null)
-            {
-                if (vehicle.ParkedFlag == true)
-                {
-                    vehicle.ParkedFlag = false;
-                    vehicle.DepartureTime = DateTime.Now;
-                }
-                else
-                {
-                    vehicle.ParkedFlag = true;
-                    vehicle.ArrivalTime = DateTime.Now;
-                }
-                _context.SaveChanges();
-            return RedirectToAction(nameof(Profile), new { id= vehicle.MemberNumber});
-            }
-            return NotFound();
 
-        }
-        public ReceiptViewModel ToReceiptViewModel(Vehicle vehicle)
-        {
-            var owner = _context.Owners.FirstOrDefault(o=>o.MemberNumber == vehicle.MemberNumber);
-            
-            var model = new ReceiptViewModel
-            {
-                RegNum = vehicle.RegNum,
-                VehicleType = vehicle.VehicleType,
-                UserName = owner.UserName,
-                ArrivalTime = vehicle.ArrivalTime,
-                DepartureTime = vehicle.DepartureTime
-                
-            };
-            model.TotalParkedTime = model.DepartureTime - model.ArrivalTime;
 
-            model.Price = model.TotalParkedTime.Hours * 100;
-            model.Price += model.TotalParkedTime.Days * 24 * 100;
-            return model;
-        }
-        public async Task<IActionResult> ShowReceipt(string regNum)
+        //------------------------------------OWNER------------------------------------------------------------------
+
+        public async Task<IActionResult> OwnerIndex(string input)
         {
-            var vehicle = await _context.Vehicle.FindAsync(regNum);
-            var model = ToReceiptViewModel(vehicle);
+            var owners = string.IsNullOrWhiteSpace(input) ?
+                _context.Owners :
+                _context.Owners.Where(v => v.UserName.ToUpper().StartsWith(input.ToUpper()));
+
+            var list = await owners.ToListAsync();
+
+            var model = list.Select(o => ToOwnerIndex(o));
+
             return View(model);
         }
+
+        public async Task<IActionResult> Profile(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var owner = await _context.Owners
+                .FirstOrDefaultAsync(m => m.MemberNumber == id);
+            if (owner == null)
+            {
+                return NotFound();
+            }
+            var model = new Profile
+            {
+                MemberNumber = owner.MemberNumber,
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                UserName = owner.UserName,
+                Telephone = owner.Telephone,
+                Email = owner.Email,
+                Vehicles = await _context.Vehicle.Where(o => o.MemberNumber == owner.MemberNumber).ToListAsync()
+            };
+
+            return View(model);
+        }
+
         public IActionResult AddOwner()
         {
             return View();
@@ -276,7 +387,7 @@ namespace Garage_3.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOwner(int memberNumber,[Bind("MemberNumber,UserName,FirstName, LastName, Email, Telephone")] EditOwnerViewModel owner)
+        public async Task<IActionResult> EditOwner(int memberNumber, [Bind("MemberNumber,UserName,FirstName, LastName, Email, Telephone")] EditOwnerViewModel owner)
         {
             var foundOwner = _context.Owners.Find(memberNumber);
             if (foundOwner == null)
@@ -290,17 +401,17 @@ namespace Garage_3.Controllers
                 foundOwner.Email = owner.Email;
                 foundOwner.Telephone = owner.Telephone;
                 foundOwner.FirstName = owner.FirstName;
-                foundOwner.LastName = owner.LastName;            
-                
+                foundOwner.LastName = owner.LastName;
+
                 try
                 {
-                    
+
                     _context.Update(foundOwner);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Owners.Any(o=> o.MemberNumber == memberNumber))
+                    if (!_context.Owners.Any(o => o.MemberNumber == memberNumber))
                     {
                         return NotFound();
                     }
@@ -349,6 +460,60 @@ namespace Garage_3.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //------------------------------------CONVERSIONS------------------------------------------------------------------
+        public ReceiptViewModel ToReceiptViewModel(Vehicle vehicle)
+        {
+            var owner = _context.Owners.FirstOrDefault(o => o.MemberNumber == vehicle.MemberNumber);
+
+            var model = new ReceiptViewModel
+            {
+                RegNum = vehicle.RegNum,
+                VehicleType = vehicle.VehicleType,
+                UserName = owner.UserName,
+                ArrivalTime = vehicle.ArrivalTime,
+                DepartureTime = vehicle.DepartureTime
+
+            };
+            model.TotalParkedTime = model.DepartureTime - model.ArrivalTime;
+
+            model.Price = model.TotalParkedTime.Hours * 100;
+            model.Price += model.TotalParkedTime.Days * 24 * 100;
+            return model;
+        }
+
+        private EditVehicleViewModel ToEditViewModel(Vehicle vehicle)
+        {
+            return new EditVehicleViewModel
+            {
+                RegNum = vehicle.RegNum,
+                Brand = vehicle.Brand,
+                Model = vehicle.Model,
+                Wheels = (int)vehicle.Wheels,
+                Owner = _context.Owners.Find(vehicle.MemberNumber).UserName,
+                ColorName = _context.Colors.Find(vehicle.ColorId).ColorName,
+                VehicleType = _context.VehicleTypes.Find(vehicle.TypeID).VehicleTypeName
+            };
+        }
+
+        public OwnerIndexViewModel ToOwnerIndex(Owner owner)
+        {
+            return new OwnerIndexViewModel
+            {
+                MemberNumber = owner.MemberNumber,
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                UserName = owner.UserName,
+                VehicleCount = _context.Vehicle.Where(v => v.MemberNumber == owner.MemberNumber).Count()
+            };
+        }
+        //------------------------------------REMOTES------------------------------------------------------------------
+
+        [HttpPost]
+        public JsonResult RegNumExists(string RegNum)
+        {
+            return Json(VehicleExists(RegNum) == false);
+        }
+
         [HttpPost]
         public JsonResult UserNameExists(string UserName)
         {
@@ -367,7 +532,6 @@ namespace Garage_3.Controllers
             return Json(_context.Owners.Any(o => o.Telephone == Telephone) == false);
         }
 
-       
         [HttpPost]
         public JsonResult DoesOwnerExists(string Owner)
         {
@@ -402,155 +566,6 @@ namespace Garage_3.Controllers
         public JsonResult PhoneSameOrUnique(string Telephone, int MemberNumber)
         {
             return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.Telephone == Telephone) == false);
-        }
-
-        // GET: Vehicles/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var vehicle = await _context.Vehicle.FindAsync(id);
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-
-            var model = ToEditViewModel(vehicle);
-            return View(model);
-        }
-        
-        private EditVehicleViewModel ToEditViewModel(Vehicle vehicle)
-        {
-            return new EditVehicleViewModel
-            {
-                RegNum = vehicle.RegNum,
-                Brand = vehicle.Brand,
-                Model = vehicle.Model,
-                Wheels = (int)vehicle.Wheels,
-                Owner = _context.Owners.Find(vehicle.MemberNumber).UserName,
-                ColorName = _context.Colors.Find(vehicle.ColorId).ColorName,
-                VehicleType = _context.VehicleTypes.Find(vehicle.TypeID).VehicleTypeName
-            };
-        }
-
-        // POST: Vehicles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("RegNum,Wheels,Model,Brand,ColorName,VehicleType,Owner")] EditVehicleViewModel editVehicle)
-        {
-            var vehicle = _context.Vehicle.Find(id);
-
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-            
-            if (ModelState.IsValid)
-            {
-                vehicle.Wheels = editVehicle.Wheels;
-                vehicle.Model = editVehicle.Model;
-                vehicle.Brand = editVehicle.Brand;
-                vehicle.Color = _context.Colors.FirstOrDefault(c=> c.ColorName== editVehicle.ColorName.ToUpper());
-                vehicle.Owner = _context.Owners.FirstOrDefault(o => o.UserName == editVehicle.Owner);
-                vehicle.VehicleType = _context.VehicleTypes.FirstOrDefault(vt => vt.VehicleTypeName == editVehicle.VehicleType.ToUpper());
-                try
-                {
-                    _context.Update(vehicle);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VehicleExists(vehicle.RegNum))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View();
-        }
-
-        // GET: Vehicles/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            
-            var vehicle = await _context.Vehicle.Include(v => v.Color)
-                .Include(v => v.VehicleType)
-                .Include(v => v.Owner)
-                .FirstOrDefaultAsync(m => m.RegNum == id);
-           
-            if (vehicle == null)
-            {
-                return NotFound();
-            }
-
-            
-            return View(vehicle);
-        }
-
-        // POST: Vehicles/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var vehicle = await _context.Vehicle.FindAsync(id);
-            _context.Vehicle.Remove(vehicle);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        
-
-            private bool VehicleExists(string id)
-        {
-            return _context.Vehicle.Any(v => v.RegNum.ToUpper() == id.ToUpper());
-        }
-
-        public async Task<IActionResult> OwnerIndex(string input)
-        {
-            var owners = string.IsNullOrWhiteSpace(input) ? 
-                _context.Owners : 
-                _context.Owners.Where(v => v.UserName.ToUpper().StartsWith(input.ToUpper()));
-
-            var list = await owners.ToListAsync();
-
-            var model = list.Select(o => ToOwnerIndex(o));
-
-            return View(model);
-        }
-
-        public OwnerIndexViewModel ToOwnerIndex(Owner owner)
-        {
-            return new OwnerIndexViewModel {
-                MemberNumber = owner.MemberNumber,
-                FirstName = owner.FirstName,
-                LastName = owner.LastName,
-                UserName = owner.UserName,
-                VehicleCount = _context.Vehicle.Where(v => v.MemberNumber == owner.MemberNumber).Count()          
-            };
-        }
-
-        public async Task<IActionResult> ParkedVehicles(string regNum)
-        {
-            var search = VehicleSearch(regNum, _context.Vehicle);
-           
-            var include = search.Include(v => v.Owner).Include(v => v.Color).Include(v => v.VehicleType);
-            
-            var vehicles = include.Where(v => v.ParkedFlag == true);
-            return View(await vehicles.ToListAsync());
         }
     }
 }
