@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_3.Models.Vehicle>
+﻿@model PaginatedList<Garage_3.Models.Vehicle>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,32 +7,32 @@
 <h1>Fordon</h1>
 
 <form asp-action="Index">
-<div class="input-group">
-    <input type="text" name="regNum" class="form-control" placeholder="Sök regnummer..." />
-    <div class="input-group-append">
-        <button type="submit" class="btn btn-outline-primary px-4 font-weight-bold">
-            Sök <i class="fas fa-search m1-2"></i>
-        </button>
+    <div class="input-group">
+        <input type="text" name="regNum" class="form-control" placeholder="Sök regnummer..." />
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-outline-primary px-4 font-weight-bold">
+                Sök <i class="fas fa-search m1-2"></i>
+            </button>
+        </div>
     </div>
-</div>
 </form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RegNum)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().RegNum)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Color)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Owner.UserName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Owner.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType.VehicleTypeName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().VehicleType.VehicleTypeName)
             </th>
-            
+
             <th></th>
         </tr>
     </thead>
@@ -44,7 +44,7 @@
                 <td>
                     <a asp-action="Details" asp-route-id="@item.RegNum">
                         @Html.DisplayFor(modelItem => item.RegNum)
-                    </a>                 
+                    </a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Color.ColorName)
@@ -57,7 +57,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
                 </td>
-               
+
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.RegNum">Redigera</a> |
                     <a asp-action="Delete" asp-route-id="@item.RegNum">Ta bort</a>
@@ -66,3 +66,20 @@
         }
     </tbody>
 </table>
+<br />
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-page="@(Model.PageIndex - 1)"
+   class="btn btn-outline-secondary @prevDisabled">
+    Föregående
+</a>
+<a asp-action="Index"
+   asp-route-page="@(Model.PageIndex + 1)"
+   class="btn btn-outline-secondary @nextDisabled">
+    Nästa
+</a>

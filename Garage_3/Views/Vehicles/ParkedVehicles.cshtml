@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Garage_3.Models.Vehicle>
+﻿@model PaginatedList<Garage_3.Models.Vehicle>
 
 @{
     ViewData["Title"] = "ParkedVehicles";
@@ -21,47 +21,64 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.RegNum)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().RegNum)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ArrivalTime)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().ArrivalTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Owner.UserName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Owner.UserName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleType.VehicleTypeName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().VehicleType.VehicleTypeName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color.ColorName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Color.ColorName)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.RegNum">
-                    @Html.DisplayFor(modelItem => item.RegNum)
-                </a>
-            </td>      
-            <td>
-                @Html.DisplayFor(modelItem => item.ArrivalTime)
-            </td>         
-            <td>
-                <a asp-controller="Owner" asp-action="Profile" asp-route-id="@item.MemberNumber">
-                    @Html.DisplayFor(modelItem => item.Owner.UserName)
-                </a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Color.ColorName)
-            </td>
-           
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.RegNum">
+                        @Html.DisplayFor(modelItem => item.RegNum)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ArrivalTime)
+                </td>
+                <td>
+                    <a asp-controller="Owner" asp-action="Profile" asp-route-id="@item.MemberNumber">
+                        @Html.DisplayFor(modelItem => item.Owner.UserName)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleType.VehicleTypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Color.ColorName)
+                </td>
+
+            </tr>
+        }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="ParkedVehicles"
+   asp-route-page="@(Model.PageIndex - 1)"
+   class="btn btn-outline-secondary @prevDisabled">
+    Föregående
+</a>
+<a asp-action="ParkedVehicles"
+   asp-route-page="@(Model.PageIndex + 1)"
+   class="btn btn-outline-secondary @nextDisabled">
+    Nästa
+</a>
