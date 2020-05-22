@@ -234,6 +234,7 @@ namespace Garage_3.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOwner([Bind("UserName,FirstName, LastName, Email, Telephone")] Owner owner)
@@ -242,6 +243,59 @@ namespace Garage_3.Controllers
             {
                 _context.Add(owner);
                 await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(OwnerIndex));
+            }
+            return View(owner);
+        }
+
+        public async Task<IActionResult> EditOwner(int? memberNumber)
+        {
+            if (memberNumber == null)
+            {
+                return NotFound();
+            }
+
+            var owner = await _context.Owners.FindAsync(memberNumber);
+
+            if (owner == null)
+            {
+                return NotFound();
+            }
+
+            return View(owner);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditOwner(int memberNumber,[Bind("MemberNumber,UserName,FirstName, LastName, Email, Telephone")] Owner owner)
+        {
+            //var foundOwner = _context.Owners.Find(memberNumber);
+            if (memberNumber != owner.MemberNumber)
+            {
+                return NotFound();
+            }
+
+            //owner.MemberNumber = memberNumber;
+
+            if (ModelState.IsValid)
+            {
+                
+                try
+                {
+                    _context.Update(owner);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Owners.Any(o=> o.MemberNumber == memberNumber))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(OwnerIndex));
             }
             return View(owner);
@@ -415,7 +469,7 @@ namespace Garage_3.Controllers
                 FirstName = owner.FirstName,
                 LastName = owner.LastName,
                 UserName = owner.UserName,
-                VehicleCount = _context.Vehicle.Select(v => v.MemberNumber == owner.MemberNumber).Count()          
+                VehicleCount = _context.Vehicle.Where(v => v.MemberNumber == owner.MemberNumber).Count()          
             };
         }
 
