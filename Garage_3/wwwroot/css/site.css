@@ -16,6 +16,13 @@ a.navbar-brand {
 /*.navbar-nav{
     font-size:large;
 }*/
+#vehicles {
+    background-image: url(/images/vehicles1.jpg);
+    background-position: top left;
+    background-repeat: repeat;
+    background-size: initial;
+    background-attachment: fixed;
+}
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;

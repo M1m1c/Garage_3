@@ -22,7 +22,10 @@ namespace Garage_3.Controllers
         // GET: VehicleTypes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.VehicleTypes.ToListAsync());
+            // ToDo: Globalization StringComparer se-SE
+            return View(await _context.VehicleTypes
+                .OrderBy(v => v.VehicleTypeName)
+                .ToListAsync());
         }
 
         // GET: VehicleTypes/Details/5
