@@ -129,7 +129,7 @@ namespace Garage_3.Controllers
 
                 try
                 {
-
+                    _context.Entry(owner).Property(p => p.MemberNumber).IsModified = false;
                     _context.Update(foundOwner);
                     await _context.SaveChangesAsync();
                 }

@@ -21,7 +21,7 @@ namespace Garage_3.Controllers
         [HttpPost]
         public JsonResult RegNumExists(string RegNum)
         {
-            return Json(_context.Vehicle.Any(v => v.RegNum.ToUpper() == RegNum.ToUpper()) == false);
+            return Json((_context.Vehicle.Any(v => v.RegNum.ToUpper() == RegNum.ToUpper())) == false);
         }
 
         [HttpPost]
@@ -75,19 +75,23 @@ namespace Garage_3.Controllers
         [HttpPost]
         public JsonResult UserNameSameOrUnique(string UserName, int MemberNumber)
         {
-            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.UserName == UserName) == false);
+            //tar ut alla som inte har samma id, letar efter samma username, får inte vara true
+            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber)
+                .Any(o => o.UserName == UserName) == false);
         }
 
         [HttpPost]
         public JsonResult EmailSameOrUnique(string Email, int MemberNumber)
         {
-            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.Email == Email) == false);
+            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber)
+                .Any(o => o.Email == Email) == false);
         }
 
         [HttpPost]
         public JsonResult PhoneSameOrUnique(string Telephone, int MemberNumber)
         {
-            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.Telephone == Telephone) == false);
+            return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber)
+                .Any(o => o.Telephone == Telephone) == false);
         }
 
         private bool DoesUserNameMatch(string userName)
