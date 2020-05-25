@@ -1,0 +1,16 @@
+﻿@model Garage_3.Models.VehicleType
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Radera</h1>
+
+<h3>Vill du verkligen ta bort fordonstypen <b>@Html.DisplayFor(model => model.VehicleTypeName)</b>?</h3>
+<div>
+     <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Radera" class="btn btn-danger" />
+        <a asp-action="Index">Tillbaka tilll fordonstyp</a>
+    </form>
+</div>

@@ -1,0 +1,31 @@
+﻿@model Garage_3.Models.VehicleType
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Ny fordonstyp</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="VehicleTypeName" class="control-label"></label>
+                <input asp-for="VehicleTypeName" class="form-control" />
+                <span asp-validation-for="VehicleTypeName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Spara" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Tillbaka till fordonstyp</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

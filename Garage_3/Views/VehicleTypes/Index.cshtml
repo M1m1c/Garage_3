@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Garage_3.Models.VehicleType>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Fordonstyper</h1>
+
+<p>
+    <a asp-action="Create">Ny fordonstyp</a>
+</p>
+<div class="col-md-5">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.VehicleTypeName)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VehicleTypeName)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Ändra</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Radera</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
