@@ -1,11 +1,13 @@
-﻿@model IEnumerable<Garage_3.Models.Color>
+﻿@model IEnumerable<Garage_3.Models.ViewModel.ColorViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Alla färger</h1>
-
+<p>
+    Färger som används av fordon kan inte raderas.
+</p>
 <p>
     <a asp-action="Create">Ny färg</a>
 </p>
@@ -26,8 +28,13 @@
                         @Html.DisplayFor(modelItem => item.ColorName)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Ändra</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Radera</a>
+                        <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Ändra</a>
+
+                        @if (item.IsUsed == false)
+                        {
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Radera</a>
+                        }
+
                     </td>
                 </tr>
             }

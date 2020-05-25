@@ -61,6 +61,18 @@ namespace Garage_3.Controllers
         }
 
         [HttpPost]
+        public JsonResult ColorNameSameOrUnique(string ColorName, int id)
+        {
+            return Json(_context.Colors.Where(c => c.Id != id ).Any(c => c.ColorName == ColorName) == false);
+        }
+
+        [HttpPost]
+        public JsonResult VehicleTypeSameOrUnique(string VehicleTypeName, int id)
+        {
+            return Json(_context.VehicleTypes.Where(t => t.Id != id).Any(t => t.VehicleTypeName == VehicleTypeName) == false);
+        }
+
+        [HttpPost]
         public JsonResult UserNameSameOrUnique(string UserName, int MemberNumber)
         {
             return Json(_context.Owners.Where(o => o.MemberNumber != MemberNumber).Any(o => o.UserName == UserName) == false);
