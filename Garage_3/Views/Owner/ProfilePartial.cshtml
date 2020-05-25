@@ -67,7 +67,7 @@
                                     }
                                     else
                                     {
-                                        <a asp-controller="Vehicles" asp-action="Park" asp-route-regNum="@vehicle.RegNum">
+                                        <a class="text-decoration-none" asp-controller="Vehicles" asp-action="Park" asp-route-regNum="@vehicle.RegNum">
                                             <div class="badge badge-secondary p-1">Parkera</div>
                                         </a>
                                         @if (vehicle.ArrivalTime > DateTime.Now.AddDays(-30)) //om parkerad under senaste 30 dagarna

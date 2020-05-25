@@ -9,7 +9,7 @@
 </head>
 <body id="vehicles">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/images/garage_3_logo_small.png" width="70" />
@@ -21,11 +21,11 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Owner" asp-action="OwnerIndex">Medlemmar</a>
+                            <button class="btn text-light" asp-area="" asp-controller="Owner" asp-action="OwnerIndex">Medlemmar</button>
                         </li>
                         <li class="nav-item">
                             <div class="dropdown">
-                                <button class="btn dropdown-toggle text-decoration-none" data-toggle="dropdown">Fordon</button>
+                                <button class="btn dropdown-toggle text-light" data-toggle="dropdown">Fordon</button>
                                 <div class="dropdown-menu">
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Vehicles" asp-action="ParkedVehicles">Parkerade fordon</a>
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Vehicles" asp-action="Index">Fordon</a>
@@ -34,7 +34,7 @@
                         </li>
                         <li class="nav-item">
                             <div class="dropdown">
-                                <button class="btn dropdown-toggle text-decoration-none" data-toggle="dropdown">Hjälptabeller</button>
+                                <button class="btn dropdown-toggle text-light" data-toggle="dropdown">Hjälptabeller</button>
                                 <div class="dropdown-menu">
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Colors" asp-action="Index">Färg</a>
                                     <a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="VehicleTypes" asp-action="Index">Fordonstyp</a>
@@ -52,7 +52,7 @@
         </main>
     </div>
 
-    <footer class="border-top text-muted">
+    <footer class="border-top text-light">
         <div class="container p-3">
             &copy; Ludvig, Jörgen &#38; Josefin <br />
             <i>18 Maj 2020</i>
