@@ -22,7 +22,6 @@ namespace Garage_3
         // GET: Colors
         public async Task<IActionResult> Index()
         {
-            // ToDo: Globalization StringComparer se-SE (sortering på svenska åäö)
             return View(await _context.Colors
                 .OrderBy(c => c.ColorName)
                 .ToListAsync());

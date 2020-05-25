@@ -26,7 +26,9 @@ namespace Garage_3.Controllers
         // GET: Vehicles
         public async Task<IActionResult> Index(string regNum, int? page)
         {
+            //fordon per sida
             int pageSize = 3;
+            //default-värde för pagenr
             int pageNumber = (page ?? 1);
 
             var vehicles = VehicleSearch(regNum, _context.Vehicle)
@@ -197,6 +199,7 @@ namespace Garage_3.Controllers
 
                 try
                 {
+                    _context.Entry(vehicle).Property(p => p.RegNum).IsModified = false;
                     _context.Update(vehicle);
                     await _context.SaveChangesAsync();
                 }
@@ -269,6 +272,7 @@ namespace Garage_3.Controllers
 
         private int ColorSetup(string colorName)
         {
+            //finns färgen redan, annars lägg till ny
             if (_context.Colors.Any(c => c.ColorName.ToUpper() == colorName.ToUpper()) == false)
             {
                 _context.Colors.Add(new Color
