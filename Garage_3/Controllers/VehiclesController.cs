@@ -113,7 +113,7 @@ namespace Garage_3.Controllers
                 {
                     _context.Add(vehicle);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Profile), "Owner", new { id = vehicle.MemberNumber });
                 }
             }
 
