@@ -199,7 +199,6 @@ namespace Garage_3.Controllers
 
                 try
                 {
-                    _context.Entry(vehicle).Property(p => p.RegNum).IsModified = false;
                     _context.Update(vehicle);
                     await _context.SaveChangesAsync();
                 }
