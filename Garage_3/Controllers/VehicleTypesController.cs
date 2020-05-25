@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage_3.Data;
 using Garage_3.Models;
+using Garage_3.Models.ViewModel;
 
 namespace Garage_3.Controllers
 {
@@ -22,10 +23,18 @@ namespace Garage_3.Controllers
         // GET: VehicleTypes
         public async Task<IActionResult> Index()
         {
-            // ToDo: Globalization StringComparer se-SE
-            return View(await _context.VehicleTypes
-                .OrderBy(v => v.VehicleTypeName)
-                .ToListAsync());
+            var list = await _context.VehicleTypes
+               .OrderBy(t => t.VehicleTypeName)
+               .ToListAsync();
+
+            var model = list.Select(t => new VehicleTypeViewModel
+            {
+                VehicleTypeName = t.VehicleTypeName,
+                Id = t.Id,
+                IsUsed = _context.Vehicle.Any(v => v.TypeID == t.Id)
+            });
+
+            return View(model);
         }
 
         // GET: VehicleTypes/Details/5
@@ -59,6 +68,8 @@ namespace Garage_3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,VehicleTypeName")] VehicleType vehicleType)
         {
+            vehicleType.VehicleTypeName = vehicleType.VehicleTypeName.ToUpper();
+
             if (ModelState.IsValid)
             {
                 _context.Add(vehicleType);
@@ -95,6 +106,8 @@ namespace Garage_3.Controllers
             {
                 return NotFound();
             }
+
+            vehicleType.VehicleTypeName = vehicleType.VehicleTypeName.ToUpper();
 
             if (ModelState.IsValid)
             {

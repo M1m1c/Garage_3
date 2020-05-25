@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Garage_3.Data;
 using Garage_3.Models;
+using Garage_3.Models.ViewModel;
 
 namespace Garage_3
 {
@@ -22,10 +23,18 @@ namespace Garage_3
         // GET: Colors
         public async Task<IActionResult> Index()
         {
-            // ToDo: Globalization StringComparer se-SE (sortering på svenska åäö)
-            return View(await _context.Colors
+            var list = await _context.Colors
                 .OrderBy(c => c.ColorName)
-                .ToListAsync());
+                .ToListAsync();
+            var model = list.Select(c => new ColorViewModel
+            {
+                ColorName = c.ColorName,
+                Id = c.Id,
+                IsUsed = _context.Vehicle.Any(v => v.ColorId == c.Id)
+            });
+
+
+            return View(model);
         }
 
         // GET: Colors/Create
@@ -41,6 +50,8 @@ namespace Garage_3
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,ColorName")] Color color)
         {
+
+            color.ColorName = color.ColorName.ToUpper();
             if (ModelState.IsValid)
             {
                 _context.Add(color);
@@ -77,6 +88,8 @@ namespace Garage_3
             {
                 return NotFound();
             }
+
+            color.ColorName = color.ColorName.ToUpper();
 
             if (ModelState.IsValid)
             {
@@ -128,6 +141,7 @@ namespace Garage_3
             _context.Colors.Remove(color);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool ColorExists(int id)

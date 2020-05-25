@@ -1,10 +1,13 @@
-﻿@model IEnumerable<Garage_3.Models.VehicleType>
+﻿@model IEnumerable<Garage_3.Models.ViewModel.VehicleTypeViewModel>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Fordonstyper</h1>
+<p>
+    Använda fordonstyper går inte att radera.
+</p>
 
 <p>
     <a asp-action="Create">Ny fordonstyp</a>
@@ -26,8 +29,12 @@
                         @Html.DisplayFor(modelItem => item.VehicleTypeName)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Ändra</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Radera</a>
+                        <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@item.Id">Ändra</a>
+
+                        @if (item.IsUsed == false)
+                        {
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Radera</a>
+                        }
                     </td>
                 </tr>
             }
